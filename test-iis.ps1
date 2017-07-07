@@ -1,28 +1,41 @@
+
 <#PSScriptInfo
 
-.VERSION 1.0.0
+.VERSION 1.0
 
 .GUID 2f16e59f-b261-41ce-bccc-ac64fa47330a
-      
-.AUTHOR Jeong Hwan Kim
 
-.TAGS
-    IIS, Test, Script, Productivity
+.AUTHOR jhkim@microsoft.com
 
-.LICENSEURI
-    https://github.com/jhkimnew/iistest/blob/master/LICENSE
+.COMPANYNAME 
 
-.PROJECTURI
-    https://github.com/jhkimnew/iistest
+.COPYRIGHT 
 
-.DESCRIPTION
-    Test IIS.
-.Synopsis
-   TBD
-.EXAMPLE
-PS> test-iis -Feature CORS
+.TAGS 
+
+.LICENSEURI 
+
+.PROJECTURI 
+
+.ICONURI 
+
+.EXTERNALMODULEDEPENDENCIES 
+
+.REQUIREDSCRIPTS 
+
+.EXTERNALSCRIPTDEPENDENCIES 
+
+.RELEASENOTES
+
 
 #>
+
+<# 
+
+.DESCRIPTION 
+ test tool for verifying IIS features 
+
+#> 
 [CmdletBinding()]
 [Alias("IIS")]
 [OutputType([string[]])]
@@ -47,3 +60,4 @@ function Test-Iis
 }
 Test-Iis @PSBOundParameters
 #EOF
+
