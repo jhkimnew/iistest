@@ -1,21 +1,21 @@
 
 <#PSScriptInfo
 
-.VERSION 1.1
+.VERSION 1.2
 
 .GUID 2f16e59f-b261-41ce-bccc-ac64fa47330a
 
-.AUTHOR jhkim@microsoft.com
+.AUTHOR TBD
 
-.COMPANYNAME 
+.COMPANYNAME TBD
 
-.COPYRIGHT 
+.COPYRIGHT TBD
 
-.TAGS 
+.TAGS IIS
 
-.LICENSEURI 
+.LICENSEURI TBD 
 
-.PROJECTURI 
+.PROJECTURI https://github.com/jhkimnew/iistest
 
 .ICONURI 
 
@@ -37,12 +37,12 @@
 
 #> 
 [CmdletBinding()]
-[Alias("IIS")]
+[Alias("IISTEST")]
 [OutputType([string[]])]
 Param
 (
     [Parameter(Position=0)]
-    $Feature = "CORS"
+    $Feature
  
 )
 function Test-Iis
@@ -53,10 +53,13 @@ function Test-Iis
     Param
     (
         [Parameter(Position=0)]
-        $Feature = "CORS"
+        $Feature
     )
 
-    Invoke-WebRequest http://localhost    
+    if ($Feature)
+    {
+       Invoke-WebRequest http://localhost    
+    }
 }
 Test-Iis @PSBOundParameters
 #EOF
