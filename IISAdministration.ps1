@@ -26,13 +26,24 @@ $rootWebconfigPath = Join-Path -path $runtimeDeirectory -childpath "config\web.c
 $rootWebconfigBackupPath = Join-Path -path $runtimeDeirectory -childpath "config\web_backup.config"
 
 # Set g_testDir, which is supposed to be set by the driver.js when this ps1 file is executed
-if ($g_testDir -eq $null)
-{  
-    $global:g_testDir = join-path $env:windir "system32\webtest"
+$includeFilePath = $null
+if (test-path .\IISProvider_Include.ps1)
+{
+    $includeFilePath = ".\IISProvider_Include.ps1"
+    $global:g_testDir = ".\"
 }
+else
+{
+    if ($g_testDir -eq $null)
+    {  
+        $global:g_testDir = join-path $env:windir "system32\webtest"
+    }
 
-# Excute test framework to load libary functions and variables
-& ($g_testDir+'\scripts\Powershell\IISProvider\IISProvider_Include.ps1')
+    # Excute test framework to load libary functions and variables
+    $includeFilePath = $g_testDir+'\scripts\Powershell\IISProvider\IISProvider_Include.ps1'
+}
+& ($includeFilePath)
+
 $TEXT_SCRIPT_SUMMARY     = "N/A";
 
 function Initialize($objContext)
