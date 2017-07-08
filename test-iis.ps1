@@ -35,21 +35,27 @@
 .DESCRIPTION 
  test tool for verifying IIS features 
 
+ Whenever code is updated, make sure there is no error or warning from ScriptAnalyzer
+
+ Install-Module PSScriptAnalyzer
+ Import-Module psscriptanalyzer
+ Invoke-ScriptAnalyzer -Path .\test-iis.ps1 
 #> 
 [CmdletBinding()]
 [Alias("IISTEST")]
-[OutputType([string[]])]
+[OutputType([String[]], [String])]
 Param
 (
     [Parameter(Position=0)]
-    $Feature
+    [ValidateSet('CORS','IISAdministration')]
+    [String] $Feature
  
 )
-function Test-Iis
+function Test-IISServer
 {
     [CmdletBinding()]
-    [Alias("iis-test")]
-    [OutputType([string[]])]
+    [Alias("TEST-IIS")]
+    [OutputType([String[]], [String])]
     Param
     (
         [Parameter(Position=0)]
@@ -58,9 +64,30 @@ function Test-Iis
 
     if ($Feature)
     {
-       Invoke-WebRequest http://localhost    
+       switch ($Feature)
+       {
+           "IISAdministration" { ("Test-IISAdministration") }
+           "CORS"              { ("Test-CORS")              }
+           default             { Write-Warning ("Unsupported feature name '" + $Feature + "'") }
+       }
+    }
+    else
+    {
+        Write-Warning "Feature parameter is not set"
     }
 }
-Test-Iis @PSBOundParameters
+
+function Test-IISAdministration
+{
+    ("Test-IISAdministration")
+}
+
+function Test-CORS
+{
+    ("Test-CORS")
+}
+
+# Call Test-IISServer function
+Test-IISServer @PSBOundParameters
 #EOF
 
