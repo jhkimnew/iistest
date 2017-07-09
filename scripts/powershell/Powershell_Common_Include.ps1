@@ -208,12 +208,17 @@ function global:LogTestCaseError ($errorObject, $exceptionExpected)
 #////////////////////////////////////////////
 function global:LogStartTest($param)
 {
+    $g_testenv.foundFailure = $false
+    if ($g_testenv.testStarted)
+    {
+        throw ("Test is already started")
+    }
+    $g_testenv.testStarted = $true
     $strComment = $param[0]
     $testcaseID = $param[1]
-    Write-Verbose ("LogStartTest " + $testcaseID + ":" + $strComment)
+    $g_testenv.testcase = $testcaseID.ToString() + ":" + $strComment
     return $true
 }
-
 
 #////////////////////////////////////////////
 #
@@ -224,7 +229,23 @@ function global:LogStartTest($param)
 #////////////////////////////////////////////
 function global:LogEndTest()
 {
-    Write-Host ("LogEndTest") -ForegroundColor Gray
+    if (-not $g_testenv.testStarted)
+    {
+        throw ("Failed to end test")
+    }
+    $g_testenv.testStarted = $false
+    Write-Host ("###################################")
+    if ($g_testenv.foundFailure)
+    {
+        Write-Host ("Test Success " + $g_testenv.testcase)  -ForegroundColor Green
+        $g_testenv.totalFailedTestCase += 1
+    }
+    else
+    {
+        Write-Host ("Test Failure " + $g_testenv.testcase) -ForegroundColor Red
+        $g_testenv.totalPassedTestCase += 1 
+    }
+    Write-Host ("###################################")
 }
 
 #////////////////////////////////////////////
@@ -390,7 +411,7 @@ function global:LogVerifyStrNotEq($param)
 #////////////////////////////////////////////
 function global:LogPass($strComment)
 {
-    Write-Host ($strComment) -ForegroundColor Green
+    Write-Host ($strComment)
 }
 
 #////////////////////////////////////////////
@@ -402,6 +423,7 @@ function global:LogPass($strComment)
 #////////////////////////////////////////////
 function global:LogFail($strComment)
 {
+    $g_testEnv.foundFailure = $true
     Write-Host ("Error!!! " + $strComment) -ForegroundColor Red
 }
 
@@ -414,7 +436,7 @@ function global:LogFail($strComment)
 #////////////////////////////////////////////
 function global:LogComment ($strComment) 
 {
-    Write-Host ($strComment) -ForegroundColor Yellow
+    Write-Host ($strComment) -ForegroundColor Gray
 }
 
 #////////////////////////////////////////////
@@ -586,6 +608,11 @@ $global:g_testEnv = new-object psobject
 add-member -in $global:g_testEnv noteproperty WebSite1 "Default Web Site"
 add-member -in $global:g_testEnv noteproperty AppPool1 "DefaultAppPool"
 add-member -in $global:g_testEnv noteproperty BaseURL "http://localhost:80"
+add-member -in $global:g_testEnv noteproperty testStarted $false
+add-member -in $global:g_testEnv noteproperty testcase  $null
+add-member -in $global:g_testEnv noteproperty foundFailure $false
+add-member -in $global:g_testEnv noteproperty totalPassedTestCase 0
+add-member -in $global:g_testEnv noteproperty totalFailedTestCase 0
  
 #////////////////////////////////////////////
 #

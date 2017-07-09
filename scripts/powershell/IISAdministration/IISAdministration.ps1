@@ -89,7 +89,10 @@ function RestoreRootWebConfig()
 
 function BackupAppHostConfig()
 {
-    Copy-Item -Path $env:systemroot\system32\inetsrv\config\applicationHost.config -Destination $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak -Force
+    if (-not (test-path $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak))
+    {
+        Copy-Item -Path $env:systemroot\system32\inetsrv\config\applicationHost.config -Destination $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak -Force
+    }
 }
 
 function RestoreAppHostConfig()
@@ -6172,6 +6175,7 @@ function TestScenario() {
 
 BackupRootWebConfig
 BackupAppHostConfig
+RestoreAppHostConfig
 #
 # Call global function of RunTest to launch all test scenarios
 #
