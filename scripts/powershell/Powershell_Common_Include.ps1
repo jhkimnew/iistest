@@ -33,12 +33,13 @@
 #    1. run.js "%windir%\system32\webtest\scripts\powershell\driver.js %windir%\system32\webtest\scripts\Powershell\IISProvider\walkthrough.ps1" -cl 74167
 #         
 #////////////////////////////////////////////
-
-
 $global:g_serverManager = $false
-$iisTestReg = get-item HKLM:Software\Microsoft\IISTest
-$g_serverManager = ($iisTestReg.getvalue("ServerManagerMode") -eq 1)
 
+if ($global:g_iistest -eq $false)
+{
+    $iisTestReg = get-item HKLM:Software\Microsoft\IISTest
+    $g_serverManager = ($iisTestReg.getvalue("ServerManagerMode") -eq 1)
+}
 
 #////////////////////////////////////////////
 #
@@ -202,6 +203,224 @@ function global:LogTestCaseError ($errorObject, $exceptionExpected)
 #
 #Routine Description: 
 #
+#    Log StartTest
+#
+#////////////////////////////////////////////
+function global:LogStartTest($param)
+{
+    $strComment = $param[0]
+    $testcaseID = $param[1]
+    Write-Verbose ("LogStartTest " + $testcaseID + ":" + $strComment)
+    return $true
+}
+
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log EndTest
+#
+#////////////////////////////////////////////
+function global:LogEndTest()
+{
+    Write-Host ("LogEndTest") -ForegroundColor Gray
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log LogBUGVerifyStrEq
+#
+#////////////////////////////////////////////
+function global:LogBUGVerifyStrEq($param)
+{
+    $p1 = $param[0]
+    $p2 = $param[1] 
+    $p3 = $param[2]
+    $p4 = $param[3]
+    $p5 = $param[4]
+
+    Write-Host ("LogBUGVerifyStrEq") -ForegroundColor Yellow
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log LogVerifyTrue
+#
+#////////////////////////////////////////////
+function global:LogVerifyTrue($param)
+{
+    $expected = $param[0]
+    $description = $param[1]
+
+    if ($expected)
+    {
+        LogPass($description) 
+    }
+    else
+    {
+        LogFail($description)
+    }
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log LogVerifyFalse
+#
+#////////////////////////////////////////////
+function global:LogVerifyFalse($param)
+{
+    $expected = $param[0]
+    $description = $param[1]
+
+    if ($expected)
+    {
+        LogFail($description)
+    }
+    else
+    {
+        LogPass($description) 
+    }
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log LogVerifyNumEq
+#
+#////////////////////////////////////////////
+function global:LogVerifyNumEq($param)
+{
+    $expected = $param[0]
+    $actual = $param[1]
+    $description = $param[2]
+
+    if ($expected -eq $actual)
+    {
+        LogPass($description) 
+    }
+    else
+    {
+        LogFail($description)
+    }
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log LogVerifyNumNotEq
+#
+#////////////////////////////////////////////
+function global:LogVerifyNumNotEq($param)
+{
+    $expected = $param[0]
+    $actual = $param[1]
+    $description = $param[2]
+
+    if ($expected -eq $actual)
+    {
+        LogFail($description)
+    }
+    else
+    {
+        LogPass($description) 
+    }
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log LogVerifyStrEq
+#
+#////////////////////////////////////////////
+function global:LogVerifyStrEq($param)
+{
+    $expected = $param[0]
+    $actual = $param[1]
+    $description = $param[2]
+
+    if ($expected -eq $actual)
+    {
+        LogPass($description) 
+    }
+    else
+    {
+        LogFail($description)
+    }
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log LogVerifyStrNotEq
+#
+#////////////////////////////////////////////
+function global:LogVerifyStrNotEq($param)
+{
+    $expected = $param[0]
+    $actual = $param[1]
+    $description = $param[2]
+
+    if ($expected -eq $actual)
+    {
+        LogFail($description)
+    }
+    else
+    {
+        LogPass($description) 
+    }
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log Pass
+#
+#////////////////////////////////////////////
+function global:LogPass($strComment)
+{
+    Write-Host ($strComment) -ForegroundColor Green
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log Fail
+#
+#////////////////////////////////////////////
+function global:LogFail($strComment)
+{
+    Write-Host ("Error!!! " + $strComment) -ForegroundColor Red
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
+#    Log Comment
+#
+#////////////////////////////////////////////
+function global:LogComment ($strComment) 
+{
+    Write-Host ($strComment) -ForegroundColor Yellow
+}
+
+#////////////////////////////////////////////
+#
+#Routine Description: 
+#
 #    Log Function Error
 #
 #////////////////////////////////////////////
@@ -252,28 +471,17 @@ function global:LogWarning ($strComment)
 #
 #Routine Description: 
 #
-#    Log Comment
-#
-#////////////////////////////////////////////
-function global:LogComment ($strComment) 
-{
-    LogTrace $strComment $TRACE_LEVEL_NORMAL
-}
-
-#////////////////////////////////////////////
-#
-#Routine Description: 
-#
 #    Log Trace Information
 #
 #////////////////////////////////////////////
 function global:LogTrace ($strComment, $enumLogType) 
 {
     if ( $enumLogType -eq $TRACE_LEVEL_FATAL ) {
-        $g_logObject.Fail( $strComment )
+        LogFail( $strComment )
     }
     else {
-        $g_logObject.Comment( $strComment )
+        
+        LogComment( $strComment )
     }
 }
 
@@ -355,11 +563,6 @@ function global:IISTest-ImportIISAdministration ()
 #
 #////////////////////////////////////////////
 
-$global:g_logObject = new-object -ComObject msutil.log
-$global:g_iisConfig = new-object -ComObject msutil.iis7config
-$global:g_scriptUtil = new-object -ComObject MSUtil.ScriptUtil
-$global:g_myHttpClient = new-object -ComObject MSUtil.Client
-
 $global:objContext = $null
 $global:TRACE_LEVEL_FATAL = 0
 $global:TRACE_LEVEL_NORMAL = 1
@@ -374,11 +577,16 @@ if ($culture -eq $null)
     ### English UI language name is "en-US"
     $global:culture = (Get-UICulture).name
 }
+
+$global:g_scriptUtil = new-object psobject
+add-member -in $global:g_scriptUtil noteproperty IISTestAdminUser "administrator"
+add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword "iis6!dfu"
+
 $global:g_testEnv = new-object psobject
 add-member -in $global:g_testEnv noteproperty WebSite1 "Default Web Site"
 add-member -in $global:g_testEnv noteproperty AppPool1 "DefaultAppPool"
 add-member -in $global:g_testEnv noteproperty BaseURL "http://localhost:80"
-  
+ 
 #////////////////////////////////////////////
 #
 # Initialize TestFrameWork
@@ -386,12 +594,6 @@ add-member -in $global:g_testEnv noteproperty BaseURL "http://localhost:80"
 #////////////////////////////////////////////
 
 ## Initialize IIS common objects
-$g_logObject.Init > $null
-if(!$g_serverManager)
-{
-    $g_iisConfig.Initialize($null)
-}
-
 LogDebug( "Enter Initialize TestFrameWork..." );
 # Set g_testDir, which is supposed to be set by the driver.js when this ps1 file is executed
 if ($g_testDir -eq $null)

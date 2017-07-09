@@ -28,7 +28,10 @@ if ($g_testDir -eq $null)
 &($g_testDir+'\scripts\Powershell\Powershell_Common_Include.ps1')
 
 # Update help
-update-help webadministration -Force
+if (-not $global:g_iistest)
+{
+    update-help webadministration -Force
+}
 
 $IISVersionMaj = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\InetStp" -Name "MajorVersion").MajorVersion
 if($IISVersionMaj -ge 10)

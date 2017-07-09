@@ -62,6 +62,9 @@ function Test-IISServer
         $Feature
     )
 
+    $global:g_testDir = (get-item .).FullName
+    $global:g_iistest = $true
+
     if ($Feature)
     {
        switch ($Feature)
