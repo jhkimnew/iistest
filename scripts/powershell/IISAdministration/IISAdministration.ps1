@@ -850,7 +850,7 @@ function TestScenario() {
 
     if ( LogStartTest("IISAdministration BVT #10 New-IISConfigCollectionElement and Remove-IISConfigCollectionElement : Add and remove a binding for Default Web Site", 128805) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             #Get the count of bindings under Default Web Site
             $configSection = Get-IISConfigSection -sectionPath "system.applicationHost/sites"
@@ -898,7 +898,7 @@ function TestScenario() {
 
     if ( LogStartTest("IISAdministration BVT #11 New-IISConfigCollectionElement and Remove-IISConfigCollectionElement : Add and remove a default document for Server", 128806) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             Reset-IISServerManager -confirm:$false
             #Get the count of bindings under Default Web Site
@@ -940,7 +940,7 @@ function TestScenario() {
 
     if ( LogStartTest("IISAdministration BVT #12 New-IISConfigCollectionElement and Remove-IISConfigCollectionElement : Error-handling", 128807) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             Reset-IISServerManager -confirm:$false
             # TH bug #1966230 "Get-IISConfigSection should enumerate all the sections when -sectionPath parameter is null"            
@@ -948,10 +948,10 @@ function TestScenario() {
             LogVerifyTrue($?, "No error happened")
             $count_SiteLevel = (Get-IISConfigSection -Location "Default Web Site").Count
             LogVerifyTrue($?, "No error happened")
-            LogVerifyTrue($count_ServerLevel -ge 120, "All sections for server levle have been found.")
-            LogVerifyTrue($count_SiteLevel -ge 101, "All sections for site levle have been found.")
+            LogVerifyTrue(($count_ServerLevel -ge 120), "All sections for server levle have been found.")
+            LogVerifyTrue(($count_SiteLevel -ge 101), "All sections for site levle have been found.")
             # TH bug #2283914 "BugBash: Get-IISConfigSection should show different result when it is called from site level" 
-            LogVerifyTrue($count_ServerLevel -gt $count_SiteLevel, "The numbers of scetions that called from server and site levles should be different.")
+            LogVerifyTrue(($count_ServerLevel -gt $count_SiteLevel), "The numbers of scetions that called from server and site levles should be different.")
             
                         
             # Add duplicate configcollectionitem(duplicate unique key)
@@ -1130,7 +1130,7 @@ function TestScenario() {
 
     if ( LogStartTest("IISAdministration BVT #13 Set-IISConfigAttributeValue : change a few default settings and check", 128808) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             # Allow directory browsing of server node (borrowed the idea from case id 74169)
             Reset-IISServerManager -Confirm:$false
@@ -1222,7 +1222,7 @@ function TestScenario() {
 
     if ( LogStartTest("IISAdministration BVT #14 Set-IISConfigAttributeValue : test error-handling for the command", 128809) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             # Assign null value to the parameter ConfigObject 
             $configSection = Get-IISConfigSection -sectionPath "system.applicationHost/sites"
@@ -1772,14 +1772,18 @@ function TestScenario() {
 
     if ( LogStartTest("IISAdministration #22 - Set-IISConfigAttributeValue : Try create a vast number of IIS sites and set them differently, then manage them", 129150) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             Reset-IISServerManager -Confirm:$false
             $elapsedTime = [System.Diagnostics.StopWatch]::StartNew()
             $SitesCount = 1
             cd $env:homedrive\inetpub\wwwroot
             Start-IISCommitDelay
-            while($SitesCount -lt 10000)
+
+            #
+            # Use 100 instead of 10000
+            #
+            while($SitesCount -lt 100)
             {
                  $SiteName = "TestSite" + $SitesCount
                  new-item -path  $env:homedrive\inetpub\wwwroot -name $SiteName -type directory | Out-Null
@@ -1793,7 +1797,10 @@ function TestScenario() {
             
             $SitesPos = 1
             Start-IISCommitDelay            
-            while($SitesPos -lt 10000)
+            #
+            # Use 100 instead of 10000
+            #
+            while($SitesPos -lt 100)
             {
                 $SiteName = "TestSite" + $SitesPos
                 #commit to apphost instead of each web.cofig, to save memeory.
@@ -1806,7 +1813,10 @@ function TestScenario() {
             LogComment("Total Elapsed Time: $($elapsedTime.Elapsed.ToString())")
             $SitesPos = 1
             
-            while($SitesPos -lt 10000)
+            #
+            # Use 100 instead of 10000
+            #            
+            while($SitesPos -lt 100)
             {
                 $SiteName = "TestSite" + $SitesPos
                 $configSection = Get-IISConfigSection -sectionPath "system.webServer/asp" -Location $SiteName
@@ -1837,7 +1847,7 @@ function TestScenario() {
 
     if ( LogStartTest("IISAdministration #23 - Test ETs of IIS configuration: App and VDir Level; Different data types; Rare Setting places", 129151) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         { 
             Reset-IISServerManager -Confirm:$false
             #FTP Part
@@ -1984,7 +1994,7 @@ function TestScenario() {
 
     if (LogStartTest("IISAdministration #38 - Confirm updated values when the flag value does not start from 0", 129556) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\Backup.xml" -Force
             $xml = New-Object XML
@@ -2017,7 +2027,7 @@ function TestScenario() {
             $xml.Save("$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml")
             
             ## Copy custom schema files to IIS config schema directory
-            IISTest-SafeCopy ("$g_testDirt\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml") ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
+            IISTest-SafeCopy ("$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml") ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
             
             ## Register IIS custom schema section
             if ($null -eq (get-WebConfigurationProperty / -name sectionGroups["iispowershell"]))
@@ -2217,7 +2227,7 @@ function TestScenario() {
    
     if (LogStartTest("IISAdministration #43 - Get-IISConfigSection - CommitPath and Location", 130156) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {
             #Setup
             #
@@ -2602,7 +2612,7 @@ function TestScenario() {
     
     if (LogStartTest("IISAdministration BVT #46 - Get-IISConfigCollection", 130474) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {    
             #Scenarios1: Normal Scenarios with -collectionName
             Reset-IISServerManager -Confirm:$false            
@@ -2829,7 +2839,7 @@ function TestScenario() {
     
     if (LogStartTest("IISAdministration BVT #47 - Remove-IISConfigAttribute", 130475) -eq $true)
     {
-        if ( IISTest-Ready)
+        if ( IISTest-Ready )
         {   
             #Scenarios1: Get-IISConfigSection  | Remove-IISConfigAttribute  
             #SetUp a base attribute value

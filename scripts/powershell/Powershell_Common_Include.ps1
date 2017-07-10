@@ -25,13 +25,6 @@
 #    1. Create a global include file for your test area
 #    2. Excute IISProvider_common_include.ps1 from the file of #1
 #    3. Excute #1 inside of all your test scripts
-#
-#    How to launch test suite
-#    1. %windir%\system32\webtest\tools\run.js -f %windir%\system32\webtest\tools\suites\powershell.xml
-#   
-#    How to launch test case with test case id, 555
-#    1. run.js "%windir%\system32\webtest\scripts\powershell\driver.js %windir%\system32\webtest\scripts\Powershell\IISProvider\walkthrough.ps1" -cl 74167
-#         
 #////////////////////////////////////////////
 $global:g_serverManager = $false
 
@@ -650,7 +643,7 @@ if ($culture -eq $null)
 
 $global:g_scriptUtil = new-object psobject
 add-member -in $global:g_scriptUtil noteproperty IISTestAdminUser "administrator"
-add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword "xxx"
+add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword "iis6!dfu"
 
 $global:g_testEnv = new-object psobject
 add-member -in $global:g_testEnv noteproperty WebSite1 "Default Web Site"
