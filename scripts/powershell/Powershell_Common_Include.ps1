@@ -406,6 +406,24 @@ function global:LogVerifyStrEq($param)
     $actual = $param[1]
     $description = $param[2] + ", EXPECTED $expected, ACTUAL $actual"
 
+    # convert $null value to ""
+    if ($expected -eq $null)
+    {
+        $expected = ""
+    }
+    if ($expected -ne $null -and $expected.Trim() -eq "")
+    {
+        $expected = ""
+    }
+    if ($actual -eq $null)
+    {
+        $actual = ""
+    }
+    if ($actual -ne $null -and $actual.Trim() -eq "")
+    {
+        $actual = ""
+    }
+    
     if ($expected -eq $actual)
     {
         LogPass($description) 
