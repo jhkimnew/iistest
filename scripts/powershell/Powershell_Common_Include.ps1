@@ -602,7 +602,7 @@ if ($culture -eq $null)
 
 $global:g_scriptUtil = new-object psobject
 add-member -in $global:g_scriptUtil noteproperty IISTestAdminUser "administrator"
-add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword "iis6!dfu"
+add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword "xxx"
 
 $global:g_testEnv = new-object psobject
 add-member -in $global:g_testEnv noteproperty WebSite1 "Default Web Site"
