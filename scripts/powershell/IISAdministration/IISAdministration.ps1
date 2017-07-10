@@ -262,7 +262,7 @@ function TestScenario() {
    
             #verify
             $result = $null = Get-IISSite -Name "demo"
-            LogVerifyTrue($result.State -eq "Started", "Get-IISSite: right state")
+            LogVerifyTrue(($result.State -eq "Started"), "Get-IISSite: right state")
 
             #Execute
             $logging = Get-IISConfigElement -ConfigElement $result -ChildelementName "traceFailedRequestsLogging"
@@ -277,7 +277,7 @@ function TestScenario() {
    
             #verify
             $result = $null = Get-IISSite -Name "test"
-            LogVerifyTrue($result.State -eq "Stopped", "Get-IISSite: stopped")
+            LogVerifyTrue(($result.State -eq "Stopped"), "Get-IISSite: stopped")
 
             #Execute
             Start-IISCommitDelay
@@ -288,7 +288,7 @@ function TestScenario() {
    
             #verify
             $result = $null = Get-IISSite -Name "TestSite"
-            LogVerifyTrue($result.State -eq $null, "Get-IISSite: Unknown")
+            LogVerifyTrue(($result.State -eq $null), "Get-IISSite: Unknown")
 
             #Execute
             $result = $null = Get-IISSite
@@ -307,7 +307,7 @@ function TestScenario() {
             $result = Get-IISSite "Default Web Site"
             
             #Verify
-            LogVerifyTrue("Default Web Site" -eq $result.Name , "Verify the web site name")
+            LogVerifyTrue(("Default Web Site" -eq $result.Name), "Verify the web site name")
 
             #Pipe site name to Get-IISSite
             #Execute
@@ -316,7 +316,7 @@ function TestScenario() {
             #Verify
             $result = "test1","test2","test99","test3"| Get-IISSite -WarningVariable warning
             LogVerifyTrue($warning.Item(0).Message.Equals("Web site 'test99' does not exist."), "Verify the warning message")
-            LogVerifyTrue(3 -eq $result.count, "Verify the web sites count")
+            LogVerifyTrue((3 -eq $result.count), "Verify the web sites count")
 
             #Remove all sites, then call them
             #Execute
@@ -324,7 +324,7 @@ function TestScenario() {
             $result = Get-IISSite
             
             #Verify
-            LogVerifyTrue($null -eq $result, "Verify null web site left")
+            LogVerifyTrue(($null -eq $result), "Verify null web site left")
 
             #Call with no parameters, ensure collection is returned
             #Execute
@@ -333,7 +333,7 @@ function TestScenario() {
             
             #Verify
             $result = Get-IISSite
-            LogVerifyTrue($siteCount + 5 -eq $result.count, "Verify web site count")
+            LogVerifyTrue(($siteCount + 5 -eq $result.count), "Verify web site count")
             (1..5) | foreach{LogVerifyTrue($result.name.Contains("test$_"), "Verify the  web site left")}
             
             # cleanup
@@ -360,7 +360,7 @@ function TestScenario() {
             Reset-IISServerManager -Confirm:$false
             New-IISSite -Name "demo" -BindingInformation "*:80:hostname" -PhysicalPath "$env:systemdrive\inetpub\wwwroot"
             $result = Get-IISSite -Name "demo"
-            LogVerifyTrue($result -ne $null, "Site Created");
+            LogVerifyTrue(($result -ne $null), "Site Created");
             
             #Execute
             Remove-IISSite -Name "demo" -Confirm:$false
@@ -368,7 +368,7 @@ function TestScenario() {
             #verify
             LogVerifyTrue($?, "No error happened");
             $result = Get-IISSite -Name "demo"
-            LogVerifyTrue($result -eq $null, "Site removed")
+            LogVerifyTrue(($result -eq $null), "Site removed")
 
             #Execute
             $result = Remove-IISSite -Name "non-exist" -WarningVariable warning
@@ -391,7 +391,7 @@ function TestScenario() {
             #Verify            
             LogVerifyTrue($?, "No error happened");
             $result = Get-IISSite | ?{$_.name -like "test*"}
-            LogVerifyTrue(4 -eq $result.count , "Verify the web sites count.")
+            LogVerifyTrue((4 -eq $result.count), "Verify the web sites count.")
 
             #Execute
             (Get-IISSite | ?{$_.name -like "test*"})|Remove-IISSite -Confirm:$false
@@ -399,7 +399,7 @@ function TestScenario() {
             #Verify            
             LogVerifyTrue($?, "No error happened");
             $result = Get-IISSite
-            LogVerifyTrue($siteNum -eq $result.count , "Verify the web sites count.")
+            LogVerifyTrue(($siteNum -eq $result.count), "Verify the web sites count.")
             
             #No -name parameter
             #Execute
@@ -437,34 +437,34 @@ function TestScenario() {
 
             #verify
             $result = $null = (Get-IISSite -Name "demo").State
-            LogVerifyTrue("Started" -eq $result, "Site Created")
+            LogVerifyTrue(("Started" -eq $result), "Site Created")
             
             #Execute
             Stop-IISSite -Name "demo" -Confirm:$false
    
             #verify
             $result = $null = (Get-IISSite -Name "demo").State
-            LogVerifyTrue("Stopped" -eq $result, "Stop-IISSite :stopped demosite")
+            LogVerifyTrue(("Stopped" -eq $result), "Stop-IISSite :stopped demosite")
 
             #Execute
             Start-IISSite -Name "demo"
    
             #verify
             $result = $null = (Get-IISSite -Name "demo").State
-            LogVerifyTrue("Started" -eq $result, "Start-IISSite :started demosite") 
+            LogVerifyTrue(("Started" -eq $result), "Start-IISSite :started demosite") 
             
             #Stop a site with something other than powershell Stop-IISSite then call
             #Execute
             &$appcmd stop site "demo"
             Start-Sleep 1
             $result = Get-IISSite -Name "demo"
-            LogVerifyTrue("Stopped" -eq $result.State, "Verify the site state")
+            LogVerifyTrue(("Stopped" -eq $result.State), "Verify the site state")
             Stop-IISSite -Name "demo" -Confirm:$false
             
             #Verify
             LogVerifyTrue($?, "No error happened")
             $result = Get-IISSite -Name "demo"
-            LogVerifyTrue("Stopped" -eq $result.State, "Verify the site state")
+            LogVerifyTrue(("Stopped" -eq $result.State), "Verify the site state")
 
             #Get-IISSite | Stop-IISSite            
             Start-IISSite -Name "demo"
@@ -473,7 +473,7 @@ function TestScenario() {
             #Verify
             LogVerifyTrue($?, "No error happened")
             $result = Get-IISSite -Name "demo"
-            LogVerifyTrue("Stopped" -eq $result.State, "Verify the site state")
+            LogVerifyTrue(("Stopped" -eq $result.State), "Verify the site state")
 
             #Create a new site with non-PS, stop it with Stop-IISSite
             #Execute
@@ -483,7 +483,7 @@ function TestScenario() {
             Stop-IISSite -Name "test" -Confirm:$false
             #Verify
             $result = Get-IISSite -Name "test"
-            LogVerifyTrue("Stopped" -eq $result.State, "Verify the site state")
+            LogVerifyTrue(("Stopped" -eq $result.State), "Verify the site state")
 
             
             #clean up
@@ -518,7 +518,7 @@ function TestScenario() {
             $pool = Get-IISAppPool -Name "DefaultAppPool"
             $pool.Stop()
             $state = $pool.State
-            LogVerifyTrue("Stopped" -eq $state, "Get the currect status") 
+            LogVerifyTrue(("Stopped" -eq $state), "Get the currect status") 
 
             $auto = Get-IISConfigAttributeValue -ConfigElement $pool -AttributeName "autoStart"
             LogVerifyTrue($auto, "Auto start");
@@ -529,7 +529,7 @@ function TestScenario() {
 
             $pool.Start()
             $state = $pool.State
-            LogVerifyTrue("Started" -eq $state, "Get the currect status")
+            LogVerifyTrue(("Started" -eq $state), "Get the currect status")
             
             $result = Get-IISAppPool -Name "DefaultAppPool" | Get-IISConfigAttributeValue -AttributeName "autoStart"
             LogVerifyTrue($result, "Verify the value")          
@@ -558,7 +558,7 @@ function TestScenario() {
             $state = Get-IISConfigAttributeValue -ConfigElement $site -AttributeName "State"
    
             #verify
-            LogVerifyTrue("Started" -eq $state, "Get the right state")  
+            LogVerifyTrue(("Started" -eq $state), "Get the right state")  
 
             #Execute
             $elem = Get-IISConfigElement  -ConfigElement $site -ChildelementName "limits"
@@ -1396,7 +1396,7 @@ function TestScenario() {
 
             #verify
             LogVerifyStrEq("00:00:10", $frequentHitTimePeriod.tostring(), "Verify timeSpan")  
-            LogVerifyTrue(4294967295 -eq $maxRequestEntityAllowed, "Verify uint")  
+            LogVerifyTrue((4294967295 -eq $maxRequestEntityAllowed), "Verify uint")  
             
             trap
             {
@@ -1637,7 +1637,7 @@ function TestScenario() {
             $max = Get-IISConfigAttributeValue -ConfigElement $session -AttributeName "max"
    
             #verify
-            LogVerifyTrue(4294967295 -eq $max, "Verify uint")
+            LogVerifyTrue((4294967295 -eq $max), "Verify uint")
 
             #Execute
 
@@ -2187,7 +2187,7 @@ function TestScenario() {
             $count = (Get-IISConfigCollection -ConfigElement $configSection).Count
             
             #Verify
-            LogVerifyTrue($siteCount -eq $count, "Verify the site count")
+            LogVerifyTrue(($siteCount -eq $count), "Verify the site count")
             
             #Execute
             $sitesCollection = Get-IISConfigCollection -ConfigElement $configSection
@@ -2195,7 +2195,7 @@ function TestScenario() {
             $siteCount = (Get-IISSite).Count
             
             #Verify
-            LogVerifyTrue($siteCount -eq 0, "Verify the site count")
+            LogVerifyTrue(($siteCount -eq 0), "Verify the site count")
             
             #Clean Up
             RestoreAppHostConfig         
@@ -2239,8 +2239,8 @@ function TestScenario() {
             $AppsettinsItem= $ConfigSectionPath.Item(0).SectionPath                                 
             #verify no exception here and section path do not null.
             LogVerifyTrue($?, "No error happened")
-            LogVerifyTrue($null -ne $ConfigSectionPath , "Sectionpath not null");
-            LogVerifyTrue($AppsettinsItem -eq "appSettings","Verify a right Sectionpath value here: appSettings");
+            LogVerifyTrue(($null -ne $ConfigSectionPath), "Sectionpath not null");
+            LogVerifyTrue(($AppsettinsItem -eq "appSettings"),"Verify a right Sectionpath value here: appSettings");
 
             #2 Set asp.net attribute of which deepest path on root web.config
             Reset-IISServerManager -confirm:$false
@@ -2307,7 +2307,7 @@ function TestScenario() {
             Set-IISConfigAttributeValue -ConfigElement $section -AttributeName "dynamicIdleThreshold" -AttributeValue 1
             $Value = Get-IISConfigAttributeValue -ConfigElement $section -AttributeName "dynamicIdleThreshold"; 
             
-            LogVerifyTrue($Value -eq "1", "Verify config section can set in server level.")
+            LogVerifyTrue(($Value -eq "1"), "Verify config section can set in server level.")
 
             #9 Verify a custom config section at sever level
             Reset-IISServerManager -confirm:$false
@@ -2386,7 +2386,7 @@ function TestScenario() {
            #Verify
            Get-IISConfigCollectionElement -ConfigCollection $sites -WarningVariable warning
            LogVerifyTrue($warning[0].ToString().Contains("Config collection element does not exist"), "Verify the site element left")
-           LogVerifyTrue((Get-IISSite).count -eq 0,"Verify the sites left")
+           LogVerifyTrue(((Get-IISSite).count -eq 0),"Verify the sites left")
            
            #Clean UP
            RestoreAppHostConfig
@@ -2400,7 +2400,7 @@ function TestScenario() {
            #Verify
            Get-IISConfigCollectionElement -ConfigCollection $sites -WarningVariable warning
            LogVerifyTrue($warning[0].ToString().Contains("Config collection element does not exist"), "Verify the site element left")
-           LogVerifyTrue((Get-IISSite).count -eq 0,"Verify the sites left")
+           LogVerifyTrue(((Get-IISSite).count -eq 0),"Verify the sites left")
 
            #Clean UP
            RestoreAppHostConfig
@@ -2415,7 +2415,7 @@ function TestScenario() {
            #Verify
            Get-IISConfigCollectionElement -ConfigCollection $sites -WarningVariable warning
            LogVerifyTrue($warning[0].ToString().Contains("Config collection element does not exist"), "Verify the site element left")
-           LogVerifyTrue((Get-IISSite).count -eq 0,"Verify the sites left")
+           LogVerifyTrue(((Get-IISSite).count -eq 0),"Verify the sites left")
 
            #Clean UP
            RestoreAppHostConfig
@@ -2512,7 +2512,7 @@ function TestScenario() {
 
            #Verify
            $configSection = Get-IISConfigSection -SectionPath "system.webServer/defaultDocument"
-           LogVerifyTrue($configSection.ChildElements["files"].count -eq 0,"Verify the elements left")
+           LogVerifyTrue(($configSection.ChildElements["files"].count -eq 0),"Verify the elements left")
            
            #Clean UP
            RestoreAppHostConfig
@@ -2526,7 +2526,7 @@ function TestScenario() {
 
            #Verify
            $configSection = Get-IISConfigSection -SectionPath "system.webServer/defaultDocument"
-           LogVerifyTrue($configSection.ChildElements["files"].count -eq 0,"Verify the elements left")
+           LogVerifyTrue(($configSection.ChildElements["files"].count -eq 0),"Verify the elements left")
 
            #Clean UP
            RestoreAppHostConfig
@@ -2539,7 +2539,7 @@ function TestScenario() {
            
            #Verify
            $configSection = Get-IISConfigSection -SectionPath "system.webServer/defaultDocument"
-           LogVerifyTrue($configSection.ChildElements["files"].count -eq 0,"Verify the elements left")
+           LogVerifyTrue(($configSection.ChildElements["files"].count -eq 0),"Verify the elements left")
 
            #Clean UP
            RestoreAppHostConfig
@@ -2645,7 +2645,7 @@ function TestScenario() {
             $State= Get-IISConfigAttributeValue -ConfigElement $sites -AttributeName "state"
             
             #Verify
-            LogVerifyTrue($State -eq "Started","Commands Get-IISConfigSection | Get-IISConfigCollection works well")
+            LogVerifyTrue(($State -eq "Started"),"Commands Get-IISConfigSection | Get-IISConfigCollection works well")
 
             
             #Scenarios5: Verify Section ChildElement(Not a collection) used for -collectionName error handler
@@ -4868,7 +4868,7 @@ function TestScenario() {
 
             $result = "na"
             $result = Get-IISSite -name CreatedToShared
-            LogVerifyTrue($result -ne $null, "verify the local applicationhost config is now updated with showing the new site")
+            LogVerifyTrue(($result -ne $null), "verify the local applicationhost config is now updated with showing the new site")
 
             # Remove the site from the local config
             Remove-IISSite -name CreatedToShared -Confirm:$false
@@ -4877,7 +4877,7 @@ function TestScenario() {
             Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
             $result = "na"
             $result = Get-IISSite -name CreatedToShared
-            LogVerifyTrue($result -ne $null, "verify the local applicationhost config is updated with the new site")
+            LogVerifyTrue(($result -ne $null), "verify the local applicationhost config is updated with the new site")
             Remove-IISSite -name CreatedToShared -Confirm:$false
 
             # Verify keybackup file is created
@@ -4888,7 +4888,7 @@ function TestScenario() {
 
             $result = "na"
             $result = Get-IISSite -name CreatedToShared
-            LogVerifyTrue($result -eq $null, "verify the local applicationhost config is updated and the new site does not exist anymore")
+            LogVerifyTrue(($result -eq $null), "verify the local applicationhost config is updated and the new site does not exist anymore")
             Remove-IISSite -name CreatedToShared -Confirm:$false
 
             # Verify keybackup file was removed after disabling sharedconfig
