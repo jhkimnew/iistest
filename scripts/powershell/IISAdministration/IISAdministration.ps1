@@ -1,15 +1,15 @@
 #///////////////////////////////////////////////////////////////////////////////
 #
-#Module Name:
+# Module Name:
 #    
 #    IISAdministration.ps1
 #
-#Abstract:
+# Abstract:
 #    
 #    Functional tests for IISAdministration
 #
 #
-#Author:
+# Author:
 #
 #    FlagIris Shi (v-flshi)      10-Jan-2015     Created
 #    Mark Kuang (v-markua)       13-Fre-2015     Updated
@@ -19,7 +19,7 @@
 #
 #
 #///////////////////////////////////////////////////////////////////////////////
-#Disale transcript, as there are huge amounts of lines to output for #129150 that would hange the script over 30 minutes.
+# Disale transcript, as there are huge amounts of lines to output for #129150 that would hange the script over 30 minutes.
 $global:transScriptFile = "SKIP"
 $runtimeDeirectory = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
 $rootWebconfigPath = Join-Path -path $runtimeDeirectory -childpath "config\web.config"
@@ -74,7 +74,10 @@ function Terminate($objContext) {
 
 function BackupRootWebConfig()
 {
-    Copy-Item -Path $rootWebconfigPath -Destination $rootWebconfigBackupPath -Force    
+    if (-not (test-path $rootWebconfigBackupPath))
+    {
+        Copy-Item -Path $rootWebconfigPath -Destination $rootWebconfigBackupPath -Force    
+    }
 }
 
 function RestoreRootWebConfig()
@@ -861,7 +864,7 @@ function TestScenario() {
             New-IISConfigCollectionElement -ConfigCollection $bindingsCollection -ConfigAttribute @{protocol="http";bindingInformation="*:85:foo12345"}
             Stop-IISCommitDelay
             $addedCount = $site.ChildElements["Bindings"].count
-            LogVerifyNumEq($addedCount, $beforeAddCount + 1, "Added count should be bigger by one")
+            LogVerifyNumEq($addedCount, ($beforeAddCount + 1), "Added count should be bigger by one")
 
             #remove the added binding for default web site
             $configSection = Get-IISConfigSection -sectionPath "system.applicationHost/sites"
@@ -908,7 +911,7 @@ function TestScenario() {
             New-IISConfigCollectionElement -ConfigCollection $filesCollection -ConfigAttribute @{Value = "myDoc.htm"}
             Stop-IISCommitDelay
             $addedCount = $configSection.ChildElements["files"].count
-            LogVerifyNumEq($addedCount, $beforeAddCount + 1, "OK")
+            LogVerifyNumEq($addedCount, ($beforeAddCount + 1), "OK")
 
             $configSection = Get-IISConfigSection -sectionPath "system.webServer/defaultDocument"
             $filesCollection = Get-IISConfigCollection -ConfigElement $configSection -CollectionName "files"
@@ -1910,7 +1913,7 @@ function TestScenario() {
             $fileExtensionsCollection = Get-IISConfigCollection -ConfigElement $configSection -CollectionName "fileExtensions"
             New-IISConfigCollectionElement -ConfigCollection $fileExtensionsCollection -ConfigAttribute @{"fileExtension" = "*.asp"}
             $addedCount = $configSection.ChildElements["fileExtensions"].count
-            LogVerifyNumEq($addedCount, $beforeAddCount + 1, "OK")
+            LogVerifyNumEq($addedCount, ($beforeAddCount + 1), "OK")
 
             #App Part
             if(Test-Path -Path $env:homedrive\MySite)
@@ -1930,7 +1933,7 @@ function TestScenario() {
             $filesCollection = Get-IISConfigCollection -ConfigElement $configSection -CollectionName "files"
             New-IISConfigCollectionElement -ConfigCollection $filesCollection -ConfigAttribute @{"Value" = "myDoc.htm"}
             $addedCount = $configSection.ChildElements["files"].count
-            LogVerifyNumEq($addedCount, $beforeAddCount + 1, "OK")
+            LogVerifyNumEq($addedCount, ($beforeAddCount + 1), "OK")
             		
             Reset-IISServerManager -confirm:$false 
             $configSection = Get-IISConfigSection -sectionPath "system.webServer/directoryBrowse" -CommitPath "MySite/MyApp"
@@ -1945,7 +1948,7 @@ function TestScenario() {
             $filesCollection = Get-IISConfigCollection -ConfigElement $configSection -CollectionName "files"
             New-IISConfigCollectionElement -ConfigCollection $filesCollection -ConfigAttribute @{"Value" = "myDoc.htm"}
             $addedCount = $configSection.ChildElements["files"].count
-            LogVerifyNumEq($addedCount, $beforeAddCount + 1, "OK")
+            LogVerifyNumEq($addedCount, ($beforeAddCount + 1), "OK")
             
             Reset-IISServerManager -confirm:$false 
             $configSection = Get-IISConfigSection -sectionPath "system.webServer/directoryBrowse" -CommitPath "MySite/MyDir"
@@ -1983,9 +1986,9 @@ function TestScenario() {
     {
         if ( IISTest-Ready)
         {
-            Copy-Item -Path $env:systemroot\system32\webtest\scripts\powershell\IISProvider\IISPSTest_CustomSchema.xml -Destination $env:systemroot\system32\webtest\scripts\powershell\IISProvider\Backup.xml -Force
+            Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\Backup.xml" -Force
             $xml = New-Object XML
-            $xml.Load("$env:SystemRoot\system32\webtest\scripts\Powershell\IISProvider\IISPSTest_CustomSchema.xml")
+            $xml.Load("$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml")
             $myNode = $xml.CreateElement("attribute")
             $myNode.SetAttribute("name", "myFlags2")
             $myNode.SetAttribute("type", "flags")
@@ -2011,10 +2014,10 @@ function TestScenario() {
             $myNode.AppendChild($exampleFlag3)
             $myNode.AppendChild($exampleFlag4)
             $xml.ConfigSchema.SectionSchema.AppendChild($myNode)
-            $xml.Save("$env:SystemRoot\system32\webtest\scripts\Powershell\IISProvider\IISPSTest_CustomSchema.xml")
+            $xml.Save("$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml")
             
             ## Copy custom schema files to IIS config schema directory
-            IISTest-SafeCopy ("$env:SystemRoot\system32\webtest\scripts\Powershell\IISProvider\IISPSTest_CustomSchema.xml") ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
+            IISTest-SafeCopy ("$g_testDirt\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml") ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
             
             ## Register IIS custom schema section
             if ($null -eq (get-WebConfigurationProperty / -name sectionGroups["iispowershell"]))
@@ -2073,8 +2076,8 @@ function TestScenario() {
 
             #cleanup
             RestoreAppHostConfig
-            Copy-Item -Path $env:systemroot\system32\webtest\scripts\powershell\IISProvider\Backup.xml -Destination $env:systemroot\system32\webtest\scripts\powershell\IISProvider\IISPSTest_CustomSchema.xml -Force
-            remove-item -Path $env:systemroot\system32\webtest\scripts\powershell\IISProvider\Backup.xml -Force
+            Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\Backup.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Force
+            remove-item -Path "$g_testDir\scripts\powershell\IISAdministration\Backup.xml" -Force
             cd iis:\
             IISTEST-SafeDelete ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
             
@@ -2218,9 +2221,9 @@ function TestScenario() {
         {
             #Setup
             #
-            Copy-Item -Path $env:systemroot\system32\webtest\scripts\powershell\IISProvider\IISPSTest_CustomSchema.xml -Destination $env:systemroot\system32\webtest\scripts\powershell\IISProvider\IISPSTest_CustomSchema_Backup.xml -Force
+            Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema_Backup.xml" -Force
             ## Copy custom schema files to IIS config schema directory
-            IISTest-SafeCopy ("$env:SystemRoot\system32\webtest\scripts\Powershell\IISProvider\IISPSTest_CustomSchema.xml") ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
+            IISTest-SafeCopy ("$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml") ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
             
             ## Register IIS custom schema section
             if ($null -eq (get-WebConfigurationProperty / -name sectionGroups["iispowershell"]))
@@ -2349,8 +2352,8 @@ function TestScenario() {
             
             #cleanup
             RestoreAppHostConfig
-            Copy-Item -Path $env:systemroot\system32\webtest\scripts\powershell\IISProvider\IISPSTest_CustomSchema_Backup.xml -Destination $env:systemroot\system32\webtest\scripts\powershell\IISProvider\IISPSTest_CustomSchema.xml -Force
-            remove-item -Path $env:systemroot\system32\webtest\scripts\powershell\IISProvider\IISPSTest_CustomSchema_Backup.xml -Force
+            Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema_Backup.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Force
+            remove-item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema_Backup.xml" -Force
             # we added some lines in root web.config that may casue test issues in other scenarios, so need to restore the file
             RestoreRootWebConfig
             cd iis:\
@@ -2791,7 +2794,7 @@ function TestScenario() {
             $addedCount= $sites.ChildElements["Bindings"].count
 
             #Verify
-            LogVerifyNumEq($addedCount, $beforeAddCount + 1, "Added count should be bigger by one")
+            LogVerifyNumEq($addedCount, ($beforeAddCount + 1), "Added count should be bigger by one")
 
 
             #Scenarios15:Remove the new added binding for default website            
@@ -3346,7 +3349,7 @@ function TestScenario() {
                 $collection = Get-IISConfigSection -SectionPath "system.web/compilation" -Clr 2.0 | Get-IISConfigElement -ChildElementName assemblies | Get-IISConfigCollection 
                 $collectionCounter = $collection.Count
                 $actual = $collection | Select-Object -Last 1
-                LogVerifyNumEq($collectionCounter + 1, $old_collectionCounter, "Verify collection element removed for .Net 2.0")
+                LogVerifyNumEq(($collectionCounter + 1), $old_collectionCounter, "Verify collection element removed for .Net 2.0")
                 LogVerifyStrNotEq("a2_0", $actual.Attributes["assembly"].Value, "Verify collection element removed for .Net 2.0")
 
                 $collection = "na"
@@ -3377,7 +3380,7 @@ function TestScenario() {
                 $collection = Get-IISConfigSection -SectionPath "system.web/compilation" -CommitPath $targetsite | Get-IISConfigElement -ChildElementName assemblies | Get-IISConfigCollection 
                 $collectionCounter = $collection.Count
                 $actual = $collection | Select-Object -Last 1
-                LogVerifyNumEq($collectionCounter + 1, $old_collectionCounter, "Verify collection element removed for .Net 4.0")
+                LogVerifyNumEq(($collectionCounter + 1), $old_collectionCounter, "Verify collection element removed for .Net 4.0")
                 LogVerifyStrNotEq("a4_0", $actual.Attributes["assembly"].Value, "Verify collection element removed for .Net 4.0")
 
                 $wow64Exists = test-path 'Env:\ProgramFiles(x86)'        

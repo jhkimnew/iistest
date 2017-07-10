@@ -1,0 +1,217 @@
+<configSchema>
+  <sectionSchema name="iispowershell/complextest">
+    <!-- Test Default Value and Bool support -->
+    <attribute name="boolTopLevelAttribute" type="bool" defaultValue="true" />
+    <!-- Test Enum Values -->
+    <attribute name="myEnum" type="enum" defaultValue="Option1">
+      <enum name="Option0" value="0" />
+      <enum name="Option1" value="1" />
+      <enum name="Option2" value="2" />
+    </attribute>
+    <!-- Test Flags Values, 
+          including a None to test that its not shown and when nothing is selected None is assigned
+          defaultValue is set to test: first, mid and last entry -->
+    <attribute name="myFlags" type="flags" defaultValue="Flag00, Flag01, Flag03, Flag05, Flag31">
+      <flag name="None" value="0" />
+      <flag name="Flag00" value="1" />
+      <flag name="Flag01" value="2" />
+      <flag name="Flag02" value="4" />
+      <flag name="Flag03" value="8" />
+      <flag name="Flag04" value="16" />
+      <flag name="Flag05" value="32" />
+      <flag name="Flag06" value="64" />
+      <flag name="Flag07" value="128" />
+      <flag name="Flag08" value="256" />
+      <flag name="Flag09" value="512" />
+      <flag name="Flag10" value="1024" />
+      <flag name="Flag11" value="2048" />
+      <flag name="Flag12" value="4096" />
+      <flag name="Flag13" value="8192" />
+      <flag name="Flag14" value="16384" />
+      <flag name="Flag15" value="32768" />
+      <flag name="Flag16" value="65536" />
+      <flag name="Flag17" value="131072" />
+      <flag name="Flag18" value="262144" />
+      <flag name="Flag19" value="524288" />
+      <flag name="Flag20" value="1048576" />
+      <flag name="Flag21" value="2097152" />
+      <flag name="Flag22" value="4194304" />
+      <flag name="Flag23" value="8388608" />
+      <flag name="Flag24" value="16777216" />
+      <flag name="Flag25" value="33554432" />
+      <flag name="Flag26" value="67108864" />
+      <flag name="Flag27" value="134217728" />
+      <flag name="Flag28" value="268435456" />
+      <flag name="Flag29" value="536870912" />
+      <flag name="Flag30" value="1073741824" />
+      <flag name="Flag31" value="2147483648" />
+    </attribute>
+    <!-- Test a Default Collection at the Section Level -->
+    <collection addElement="add" clearElement="clear">
+      <!-- Why not... try a TimeSpan unique key  -->
+      <attribute name="value" type="timeSpan" required="true" isUniqueKey="true" validationType="timeSpanRange" validationParameter="0,86399,60" />
+    </collection>
+    <element name="simpleElement">
+      <attribute name="elementAttribute" type="string" />
+      <method name="ElementLevelMethodNoArgs" extension="ConfigEditorTest.SampleExtension" />
+      <method name="ElementLevelMethodInputArgs" extension="ConfigEditorTest.SampleExtension">
+        <inputElement>
+          <attribute name="stringInputValue" type="string" />
+          <attribute name="boolInputValue" type="bool" />
+          <attribute name="timeSpanInputValue" type="timeSpan" />
+          <attribute name="intInputValue" type="int" />
+          <attribute name="uintInputValue" type="uint" />
+          <attribute name="enumInputValue" type="enum" defaultValue="Option1">
+            <enum name="Option1" value="1" />
+            <enum name="Option2" value="2" />
+          </attribute>
+        </inputElement>
+      </method>
+      <method name="ElementLevelMethodOutputArgs" extension="ConfigEditorTest.SampleExtension">
+        <outputElement>
+          <attribute name="data" type="string" />
+        </outputElement>
+      </method>
+      <method name="ElementLevelMethodInputAndOutputArgs" extension="ConfigEditorTest.SampleExtension">
+        <inputElement>
+          <attribute name="stringInputValue" type="string" />
+        </inputElement>
+        <outputElement>
+          <attribute name="data" type="string" />
+        </outputElement>
+      </method>
+    </element>
+    <!-- Test Collections that must be shown as an element container  -->
+    <element name="collectionContainer">
+      <attribute name="collectionAttribute" type="uint" defaultValue="123" />
+      <collection addElement="nestedItem">
+        <attribute name="primaryKey" type="string" isRequired="true" isUniqueKey="true" />
+      </collection>
+      <!-- Include a nested element inside a collection container-->
+      <element name="collectionElement">
+        <attribute name="collectionElementAttribute" type="string" />
+      </element>
+    </element>
+    <!-- Test deep nested default collections -->
+    <element name="nestedDefaultCollections">
+      <collection addElement="key">
+        <attribute name="path" type="string" isUniqueKey="true" />
+        <collection addElement="property">
+          <attribute name="id" type="uint" isUniqueKey="true" />
+          <attribute name="dataType" type="enum" required="true">
+            <enum name="DWord" value="1" />
+            <enum name="String" value="2" />
+            <enum name="MultiSZ" value="3" />
+          </attribute>
+          <collection addElement="values">
+            <attribute name="value" type="string" caseSensitive="true" />
+            <method name="ItemLevelMethodNoArgs" extension="ConfigEditorTest.SampleExtension" />
+            <method name="ItemLevelMethodInputArgs" extension="ConfigEditorTest.SampleExtension">
+              <inputElement>
+                <attribute name="stringInputValue" type="string" />
+                <attribute name="boolInputValue" type="bool" />
+                <attribute name="timeSpanInputValue" type="timeSpan" />
+                <attribute name="intInputValue" type="int" />
+                <attribute name="uintInputValue" type="uint" />
+                <attribute name="enumInputValue" type="enum" defaultValue="Option1">
+                  <enum name="Option1" value="1" />
+                  <enum name="Option2" value="2" />
+                </attribute>
+              </inputElement>
+            </method>
+            <method name="ItemLevelMethodOutputArgs" extension="ConfigEditorTest.SampleExtension">
+              <outputElement>
+                <attribute name="data" type="string" />
+              </outputElement>
+            </method>
+            <method name="ItemLevelMethodInputAndOutputArgs" extension="ConfigEditorTest.SampleExtension">
+              <inputElement>
+                <attribute name="stringInputValue" type="string" />
+              </inputElement>
+              <outputElement>
+                <attribute name="data" type="string" />
+              </outputElement>
+            </method>
+          </collection>
+        </collection>
+      </collection>
+    </element>
+    <!-- Test Collection with multiple Add Elements
+         Note: They have different schema so UI is quite interesting ...-->
+    <element name="multipleAddCollection">
+      <collection addElement="add" removeElement="remove" clearElement="clear">
+        <attribute name="name" required="true" isUniqueKey="true" type="string" validationType="nonEmptyString" />
+        <attribute name="provider" type="string" />
+        <attribute name="type" type="string" defaultValue="string" />
+      </collection>
+      <collection addElement="group">
+        <attribute name="name" required="true" isUniqueKey="true" type="string" validationType="nonEmptyString" />
+      </collection>
+    </element>
+    <!-- Test Collections with multiple combined keys-->
+    <element name="multipleKeys">
+      <!-- Test Multile Keys with only strings... -->
+      <collection addElement="multiString" clearElement="clear">
+        <attribute name="protocol" type="string" required="true" isCombinedKey="true" validationType="nonEmptyString" />
+        <attribute name="bindingInformation" type="string" required="true" isCombinedKey="true" validationType="nonEmptyString" />
+      </collection>
+      <element name="multipleKeys">
+        <!-- Test Multile Keys with uint, int and enum types on them -->
+        <collection addElement="multiString" clearElement="clear">
+          <attribute name="statusCode" type="uint" required="true" isCombinedKey="true" />
+          <attribute name="subStatusCode" type="int" defaultValue="-1" isCombinedKey="true"  />
+          <attribute name="certificateField" type="enum" required="true" isCombinedKey="true">
+            <enum name="Subject" value="1" />
+            <enum name="Issuer" value="2" />
+          </attribute>
+          <attribute name="path" type="string" expanded="true" required="true" validationType="nonEmptyString" />
+        </collection>
+      </element>
+    </element>
+
+    <!-- Test a Method at the Section Level -->
+    <method name="SectionLevelMethodNoArgs" extension="ConfigEditorTest.SampleExtension" />
+    <method name="SectionLevelMethodInputArgs" extension="ConfigEditorTest.SampleExtension">
+      <inputElement>
+        <attribute name="stringInputValue" type="string" />
+        <attribute name="boolInputValue" type="bool" />
+        <attribute name="timeSpanInputValue" type="timeSpan" />
+        <attribute name="intInputValue" type="int" />
+        <attribute name="uintInputValue" type="uint" />
+        <attribute name="enumInputValue" type="enum" defaultValue="Option1">
+          <enum name="Option1" value="1" />
+          <enum name="Option2" value="2" />
+        </attribute>
+      </inputElement>
+    </method>
+    <method name="SectionLevelMethodOutputArgs" extension="ConfigEditorTest.SampleExtension">
+      <outputElement>
+        <attribute name="data" type="string" />
+      </outputElement>
+    </method>
+    <method name="SectionLevelMethodInputAndOutputArgs" extension="ConfigEditorTest.SampleExtension">
+      <inputElement>
+        <attribute name="stringInputValue" type="string" />
+      </inputElement>
+      <outputElement>
+        <attribute name="data" type="string" />
+      </outputElement>
+    </method>
+    <method name="SectionLevelCollectionInput" extension="ConfigEditorTest.SampleExtension">
+      <inputElement>
+        <collection addElement="item">
+          <attribute name="name" type="string" />
+          <attribute name="value" type="string" />
+        </collection>
+      </inputElement>
+    </method>
+    <method name="SectionLevelCollectionOutput" extension="ConfigEditorTest.SampleExtension">
+      <outputElement>
+        <collection addElement="item">
+          <attribute name="name" type="string" />
+          <attribute name="value" type="string" />
+        </collection>
+      </outputElement>
+    </method>
+  </sectionSchema>
+</configSchema>

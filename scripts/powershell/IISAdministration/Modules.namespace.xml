@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigationTypes>
+  <Modules>
+    <type>Microsoft.IIs.PowerShell.Framework.NodeCollection</type>
+    <factoryType>Microsoft.IIs.PowerShell.Framework.NodeCollectionFactory</factoryType>
+    <assembly>Microsoft.IIS.PowerShell.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL</assembly>
+    <instanceXPath>/system.webServer/globalModules</instanceXPath>
+    <filePath>MACHINE/WEBROOT/APPHOST</filePath>
+    <readonly>true</readonly>
+    <parents>
+      <parentInfo>
+        <parentType>Server</parentType>
+        <xPath>/system.webServer/globalModules</xPath>
+        <filePath>MACHINE/WEBROOT/APPHOST</filePath>
+      </parentInfo>
+    </parents>
+  </Modules>
+  <Module>
+    <type>Microsoft.IIs.PowerShell.Framework.NamespaceNode</type>
+    <factoryType>Microsoft.IIs.PowerShell.Framework.NamespaceNodeFactory</factoryType>
+    <assembly>Microsoft.IIS.PowerShell.Framework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL</assembly>
+    <instanceXPath>system.webServer/globalModules/add[@name="%name%"]</instanceXPath>
+    <filePath>MACHINE/WEBROOT/APPHOST</filePath>
+    <newItemParameters>
+      <Parameter Name="Image" Type="System.String" />
+      <Parameter Name="PreCondition" Type="System.String" />
+    </newItemParameters>
+    <parents>
+      <parentInfo>
+        <parentType>Modules</parentType>
+        <xPath>/system.webServer/globalModules/add</xPath>
+        <filePath>MACHINE/WEBROOT/APPHOST</filePath>
+      </parentInfo>
+    </parents>
+  </Module>
+</navigationTypes>

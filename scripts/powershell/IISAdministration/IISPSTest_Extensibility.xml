@@ -1,0 +1,11 @@
+<configSchema>
+<sectionSchema name="system.applicationHost/sites">
+   <collection addElement="site" >      
+      <collection addElement="application" >       
+        <collection addElement="virtualDirectory" >
+         <attribute name="size" type="int64" defaultValue="555" />
+        </collection>
+      </collection>
+    </collection>
+</sectionSchema>
+</configSchema>

@@ -1,21 +1,21 @@
 #////////////////////////////////////////////
 #
-#Module Name:
+# Module Name:
 #    
 #    Powershell_Common_Include.ps1
 #
-#Abstract:
+# Abstract:
 #    
 #    Include file for all Powershell based test scripts in IIS test team
 #
 #
-#Author:
+# Author:
 #
 #    Jeong Hwan Kim (jhkim)  13-June-2008     Created
 #    Mark Kuang (v-markua)   20-Jan-2015      Updated
 
 #
-#References:
+# References:
 #   
 #    For a documented list of global functions and variables, use:
 #        findstr /c:"function global:" Powershell_Common_Include.ps1
@@ -217,7 +217,31 @@ function global:LogStartTest($param)
     $strComment = $param[0]
     $testcaseID = $param[1]
     $g_testenv.testcase = $testcaseID.ToString() + ":" + $strComment
-    return $true
+
+    $foundTargetTestcase = $false    
+    if ($g_testenv.targetTestcases -ne $null -and $g_testenv.targetTestcases.length -ne $null)
+    {
+        foreach ($item in $g_testenv.targetTestcases)
+        {
+            if ($testcaseID.ToString() -eq $item)
+            {
+                $foundTargetTestcase = $true
+            }
+        }
+        if ($foundTargetTestcase)
+        {
+            return $true
+        }
+        else
+        {
+            $g_testenv.testStarted = $false
+            return $false
+        }
+    }
+    else
+    {
+        return $true
+    }
 }
 
 #////////////////////////////////////////////
@@ -275,6 +299,10 @@ function global:LogBUGVerifyStrEq($param)
 #////////////////////////////////////////////
 function global:LogVerifyTrue($param)
 {
+    if ($param.length -ne 2)
+    {
+        throw ("Param number not matched")
+    }
     $expected = $param[0]
     $description = $param[1]
 
@@ -297,6 +325,10 @@ function global:LogVerifyTrue($param)
 #////////////////////////////////////////////
 function global:LogVerifyFalse($param)
 {
+    if ($param.length -ne 2)
+    {
+        throw ("Param number not matched")
+    }
     $expected = $param[0]
     $description = $param[1]
 
@@ -319,9 +351,13 @@ function global:LogVerifyFalse($param)
 #////////////////////////////////////////////
 function global:LogVerifyNumEq($param)
 {
+    if ($param.length -ne 3)
+    {
+        throw ("Param number not matched")
+    }
     $expected = $param[0]
     $actual = $param[1]
-    $description = $param[2]
+    $description = $param[2] + ", EXPECTED $expected, ACTUAL $actual"
 
     if ($expected -eq $actual)
     {
@@ -342,9 +378,13 @@ function global:LogVerifyNumEq($param)
 #////////////////////////////////////////////
 function global:LogVerifyNumNotEq($param)
 {
+    if ($param.length -ne 3)
+    {
+        throw ("Param number not matched")
+    }
     $expected = $param[0]
     $actual = $param[1]
-    $description = $param[2]
+    $description = $param[2] + ", EXPECTED $expected, ACTUAL $actual"
 
     if ($expected -eq $actual)
     {
@@ -365,9 +405,13 @@ function global:LogVerifyNumNotEq($param)
 #////////////////////////////////////////////
 function global:LogVerifyStrEq($param)
 {
+    if ($param.length -ne 3)
+    {
+        throw ("Param number not matched")
+    }
     $expected = $param[0]
     $actual = $param[1]
-    $description = $param[2]
+    $description = $param[2] + ", EXPECTED $expected, ACTUAL $actual"
 
     if ($expected -eq $actual)
     {
@@ -388,9 +432,13 @@ function global:LogVerifyStrEq($param)
 #////////////////////////////////////////////
 function global:LogVerifyStrNotEq($param)
 {
+    if ($param.length -ne 3)
+    {
+        throw ("Param number not matched")
+    }
     $expected = $param[0]
     $actual = $param[1]
-    $description = $param[2]
+    $description = $param[2] + ", EXPECTED $expected, ACTUAL $actual"
 
     if ($expected -eq $actual)
     {
@@ -613,6 +661,7 @@ add-member -in $global:g_testEnv noteproperty testcase  $null
 add-member -in $global:g_testEnv noteproperty foundFailure $false
 add-member -in $global:g_testEnv noteproperty totalPassedTestCase 0
 add-member -in $global:g_testEnv noteproperty totalFailedTestCase 0
+add-member -in $global:g_testEnv noteproperty targetTestcases $null
  
 #////////////////////////////////////////////
 #
