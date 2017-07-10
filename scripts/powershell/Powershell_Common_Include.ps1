@@ -235,7 +235,7 @@ function global:LogEndTest()
     }
     $g_testenv.testStarted = $false
     Write-Host ("###################################")
-    if ($g_testenv.foundFailure)
+    if (-not $g_testenv.foundFailure)
     {
         Write-Host ("Test Success " + $g_testenv.testcase)  -ForegroundColor Green
         $g_testenv.totalFailedTestCase += 1
