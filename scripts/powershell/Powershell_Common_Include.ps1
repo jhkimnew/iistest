@@ -407,21 +407,28 @@ function global:LogVerifyStrEq($param)
     $description = $param[2] + ", EXPECTED $expected, ACTUAL $actual"
 
     # convert $null value to ""
-    if ($expected -eq $null)
+    try
     {
-        $expected = ""
+        if ($expected -eq $null)
+        {
+            $expected = ""
+        }
+        if ($expected -ne $null -and $expected.Trim() -eq "")
+        {
+            $expected = ""
+        }
+        if ($actual -eq $null)
+        {
+            $actual = ""
+        }
+        if ($actual -ne $null -and $actual.Trim() -eq "")
+        {
+            $actual = ""
+        }
     }
-    if ($expected -ne $null -and $expected.Trim() -eq "")
+    catch
     {
-        $expected = ""
-    }
-    if ($actual -eq $null)
-    {
-        $actual = ""
-    }
-    if ($actual -ne $null -and $actual.Trim() -eq "")
-    {
-        $actual = ""
+        LogComment("Error!!! Failed to convert value")
     }
     
     if ($expected -eq $actual)

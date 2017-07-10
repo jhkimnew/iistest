@@ -5410,8 +5410,8 @@ function TestScenario() {
             Stop-Service W3SVC
             Stop-Service WAS
             Start-Service W3SVC
-            LogVerifyStrEq("Running", (Get-Service was).Status, "Verify WAS service running")
-            LogVerifyStrEq("Running", (Get-Service w3svc).Status, "Verify W3SVC service running")
+            LogVerifyStrEq("Running", (Get-Service was).Status.ToString(), "Verify WAS service running")
+            LogVerifyStrEq("Running", (Get-Service w3svc).Status.ToString(), "Verify W3SVC service running")
 
             # Create a new share and export IIS configuration 
             [byte[]] $byteArray = 64, 216, 0, 220, 64, 216, 1, 220, 64, 216, 3, 220, 64, 216, 4, 220, 64, 216, 5, 220
@@ -5444,8 +5444,8 @@ function TestScenario() {
             Stop-Service W3SVC
             Stop-Service WAS
             Start-Service W3SVC
-            LogVerifyStrEq("Running", (Get-Service was).Status, "Verify WAS service running")
-            LogVerifyStrEq("Running", (Get-Service w3svc).Status, "Verify W3SVC service running")
+            LogVerifyStrEq("Running", (Get-Service was).Status.ToString(), "Verify WAS service running")
+            LogVerifyStrEq("Running", (Get-Service w3svc).Status.ToString(), "Verify W3SVC service running")
 
             Reset-IISServerManager -Confirm:$false
             $sites_after = (Get-IISSite)
@@ -5469,8 +5469,8 @@ function TestScenario() {
             Stop-Service W3SVC
             Stop-Service WAS
             Start-Service W3SVC
-            LogVerifyStrEq("Running", (Get-Service was).Status, "Verify WAS service running")
-            LogVerifyStrEq("Running", (Get-Service w3svc).Status, "Verify W3SVC service running")
+            LogVerifyStrEq("Running", (Get-Service was).Status.ToString(), "Verify WAS service running")
+            LogVerifyStrEq("Running", (Get-Service w3svc).Status.ToString(), "Verify W3SVC service running")
 
             Reset-IISServerManager -Confirm:$false
             $sites_after = (Get-IISSite)
