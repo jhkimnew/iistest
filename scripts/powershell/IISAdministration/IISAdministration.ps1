@@ -4116,12 +4116,12 @@ function TestScenario() {
             Reset-IISServerManager -Confirm:$false
             
             LogComment("Set up custom schema with old security providers: AesProvider, IISWASOnlyAesProvider")
-            $schemaFilepath = join-path $env:windir "system32\inetsrv\config\schema\CNGTest_schema.xml"
-            if (Test-Path $schemaFilepath)
+            $testSchemaFilepath = join-path $env:windir "system32\inetsrv\config\schema\CNGTest_schema.xml"
+            if (Test-Path $testSchemaFilepath)
             {
-                Remove-Item $schemaFilepath -Force -Confirm:$false
+                Remove-Item $testSchemaFilepath -Force -Confirm:$false
             }
-            New-Item $schemaFilepath -ItemType file -Value '<configSchema><sectionSchema name="iispowershell/cngtest"><attribute name="attribute1" type="string" encrypted="true" defaultValue="[enc:AesProvider::enc]"/><attribute name="attribute2" type="string" encrypted="true" defaultValue="[enc:IISWASOnlyAesProvider::enc]"/></sectionSchema></configSchema>'
+            New-Item $testSchemaFilepath -ItemType file -Value '<configSchema><sectionSchema name="iispowershell/cngtest"><attribute name="attribute1" type="string" encrypted="true" defaultValue="[enc:AesProvider::enc]"/><attribute name="attribute2" type="string" encrypted="true" defaultValue="[enc:IISWASOnlyAesProvider::enc]"/></sectionSchema></configSchema>'
 
             LogComment("Register the custom schema section")
             if ($null -eq (get-WebConfigurationProperty / -name sectionGroups["iispowershell"]))
@@ -4153,13 +4153,18 @@ function TestScenario() {
             LogVerifyStrEq($newValue, $result, ("old security provider: verify value is matched to " + $newValue))
             LogVerifyStrEq($newValue, $result2.Value, ("old security provider: verify value is matched to " + $newValue))
 
-            LogComment("Switch to the new security providers of CNG from the old security provider")
-            if (Test-Path $schemaFilepath)
+            # Do below scenario only when the current machine supports CNG encryption
+            $cngFound = (Get-Content -Path (join-path $env:windir "system32\inetsrv\config\schema\IIS_schema.xml") | foreach { if ($psitem.tolower().contains("cng")) { ("find") } })
+            if ($cngFound -ne $null)
             {
-                Remove-Item $schemaFilepath -Force -Confirm:$false
+                LogComment("Switch to the new security providers of CNG from the old security provider")
+                if (Test-Path $testSchemaFilepath)
+                {
+                    Remove-Item $testSchemaFilepath -Force -Confirm:$false
+                }
+                New-Item $testSchemaFilepath -ItemType file -Value '<configSchema><sectionSchema name="iispowershell/cngtest"><attribute name="attribute1" type="string" encrypted="true" defaultValue="[enc:IISCngProvider::enc]"/><attribute name="attribute2" type="string" encrypted="true" defaultValue="[enc:IISWASOnlyCngProvider::enc]"/></sectionSchema></configSchema>'
+                sleep 1
             }
-            New-Item $schemaFilepath -ItemType file -Value '<configSchema><sectionSchema name="iispowershell/cngtest"><attribute name="attribute1" type="string" encrypted="true" defaultValue="[enc:IISCngProvider::enc]"/><attribute name="attribute2" type="string" encrypted="true" defaultValue="[enc:IISWASOnlyCngProvider::enc]"/></sectionSchema></configSchema>'
-            sleep 1
 
             LogComment("Verify old value still works")            
             Reset-IISServerManager -Confirm:$false
@@ -4231,9 +4236,9 @@ function TestScenario() {
             {
                 remove-WebConfigurationProperty / -name sectionGroups["iispowershell"]
             }
-            if (Test-Path $schemaFilepath)
+            if (Test-Path $testSchemaFilepath)
             {
-                Remove-Item $schemaFilepath -Force -Confirm:$false
+                Remove-Item $testSchemaFilepath -Force -Confirm:$false
             }
 
             trap
