@@ -5555,7 +5555,7 @@ function TestScenario() {
             $user = "foo"                
             if ($temp[0].Contains("Enabled") -and $temp[0].Contains("False")) {
                 $PrivateKeyPassword = "xxx"
-                $securedPasswordSecure = convertto-securestring iis6!dfu -asplaintext -force
+                $securedPasswordSecure = $global:g_testEnv.IISTestAdminPassword
                 $PrivateKeyPasswordSecure = convertto-securestring $PrivateKeyPassword -asplaintext -force 
                 $temp = Get-LocalUser -Name $user -ErrorAction SilentlyContinue
                 if ($temp -eq $null) {
