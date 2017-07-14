@@ -73,6 +73,7 @@ function Terminate($objContext) {
 }
 
 function TestScenario() {
+    <#
     if ( LogStartTest("IISAdministration BVT #1 New-IISSite", 128796) -eq $true )
     {
         if ( IISTest-Ready )
@@ -111,7 +112,7 @@ function TestScenario() {
             LogVerifyTrue($warning.Item(0).Message.Contains("does not exist"), "Verify the warning message")
             
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
                       
             trap
             {
@@ -207,7 +208,7 @@ function TestScenario() {
             LogVerifyNumEq(3, $status.Id, "New-IISSite :created site with non-exist path")
             
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
                       
             trap
             {
@@ -308,7 +309,7 @@ function TestScenario() {
             (1..5) | foreach{LogVerifyTrue($result.name.Contains("test$_"), "Verify the  web site left")}
             
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             
                                          
             trap
@@ -383,7 +384,7 @@ function TestScenario() {
             LogVerifyTrue($warning.Item(0).Message.Equals("Web site 'test' does not exist."), "Verify the warning message")
             
             #Cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
                       
             trap
             {
@@ -460,7 +461,7 @@ function TestScenario() {
 
             
             #clean up
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             
             trap
             {
@@ -578,7 +579,7 @@ function TestScenario() {
             LogVerifyFalse($result, "Verify the config value")
            
             #cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -857,7 +858,7 @@ function TestScenario() {
             LogVerifyNumEq($removedCount, $beforeAddCount, "OK")
 
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             
             trap
             {
@@ -900,7 +901,7 @@ function TestScenario() {
             LogVerifyNumEq($removedCount, $beforeAddCount, "OK")
   
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -1090,7 +1091,7 @@ function TestScenario() {
             LogVerifyTrue($equal, "collection result decreased by 1")
 
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -1183,7 +1184,7 @@ function TestScenario() {
             start-sleep 3
 
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -1323,7 +1324,7 @@ function TestScenario() {
             }
 
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -1443,7 +1444,7 @@ function TestScenario() {
             LogVerifyFalse($enabled, "Verify bool") 
 
             #Clean
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             
             trap
             {
@@ -1497,7 +1498,7 @@ function TestScenario() {
             LogVerifyTrue($rapidFailProtection, "Verify bool") 
 
             #Clean
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             
             trap
             {
@@ -1562,7 +1563,7 @@ function TestScenario() {
             LogVerifyStrEq("MsAuthorVia,MultiProp,CompactXml,IsHidden,IsCollection", $compatFlags, "Verify flags") 
 
             #Clean
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -1631,7 +1632,7 @@ function TestScenario() {
             
               
             #Clean
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -1817,7 +1818,7 @@ function TestScenario() {
             Get-ChildItem -Path $env:homedrive\inetpub\wwwroot -filter TestSite* | remove-item -force -recurse
 
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -1963,7 +1964,7 @@ function TestScenario() {
             LogVerifyStrEq("EnableTracker,EnableSxS" ,$result , "Verify the appService Flags is changed")
 
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -2071,7 +2072,7 @@ function TestScenario() {
             LogVerifyStrEq("None" ,$result , "Verify that the flag field has been set")
 
             #cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\Backup.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Force
             remove-item -Path "$g_testDir\scripts\powershell\IISAdministration\Backup.xml" -Force
             cd iis:\
@@ -2118,7 +2119,7 @@ function TestScenario() {
             }
 
             #clean up
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             
             trap
             {
@@ -2199,7 +2200,7 @@ function TestScenario() {
             LogVerifyTrue(($siteCount -eq 0), "Verify the site count")
             
             #Clean Up
-            RestoreAppHostConfig         
+            IISTest-RestoreAppHostConfig         
 
             trap
             {
@@ -2350,7 +2351,7 @@ function TestScenario() {
             LogVerifyTrue($msg.Message.Contains("Unrecognized configuration path 'MACHINE/WEBROOT/APPHOST/bogus'"), "Verify invalid commit path")
             
             #cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema_Backup.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Force
             remove-item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema_Backup.xml" -Force
             # we added some lines in root web.config that may casue test issues in other scenarios, so need to restore the file
@@ -2391,7 +2392,7 @@ function TestScenario() {
            LogVerifyTrue(((Get-IISSite).count -eq 0),"Verify the sites left")
            
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
                       
            #2 Get-IISConfigCollection | Clear-IISConfigCollection
            #Execute
@@ -2405,7 +2406,7 @@ function TestScenario() {
            LogVerifyTrue(((Get-IISSite).count -eq 0),"Verify the sites left")
 
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
            
            #3 No -ConfigCollection parameter
            #Execute
@@ -2420,7 +2421,7 @@ function TestScenario() {
            LogVerifyTrue(((Get-IISSite).count -eq 0),"Verify the sites left")
 
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
            
            #4 Clear the locked collection
            #SetUp
@@ -2486,7 +2487,7 @@ function TestScenario() {
            LogVerifyTrue($errorMessage.ToString().Contains("Missing an argument for parameter"), "Verify the error message")
             
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
            
            trap
            {
@@ -2518,7 +2519,7 @@ function TestScenario() {
            LogVerifyTrue(($configSection.ChildElements["files"].count -eq 0),"Verify the elements left")
            
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
            
            #2 Get-IISConfigElement | Remove-IISConfigElement 
 
@@ -2532,7 +2533,7 @@ function TestScenario() {
            LogVerifyTrue(($configSection.ChildElements["files"].count -eq 0),"Verify the elements left")
 
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
            
            #3 No -ConfigCollection parameter
            Reset-IISServerManager -Confirm:$false
@@ -2545,7 +2546,7 @@ function TestScenario() {
            LogVerifyTrue(($configSection.ChildElements["files"].count -eq 0),"Verify the elements left")
 
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
            
            #4 Error-handling
            
@@ -2586,7 +2587,7 @@ function TestScenario() {
            LogVerifyTrue($errorMessage.ToString().Contains("Missing an argument for parameter"), "Verify the error message")
            
            #Clean UP
-           RestoreAppHostConfig
+           IISTest-RestoreAppHostConfig
            
            trap
            {
@@ -3017,7 +3018,7 @@ function TestScenario() {
             LogVerifyTrue($errorMessage.ToString().Contains("The argument is null"), "Verify -ConfigElement with null")
 
             #Cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             trap
             {
@@ -3543,9 +3544,9 @@ function TestScenario() {
         if ( IISTest-Ready )
         {
             # test scenarios                        
-            $username = ("$env:computername\" + $global:g_scriptUtil.IISTestAdminUser)
-            $IISTestAdminPassword = $global:g_scriptUtil.IISTestAdminPassword
-            $password = $IISTestAdminPassword
+            $username = ("$env:computername\" + $global:g_testEnv.IISTestAdminUser)
+            $unsecuredPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($global:g_testEnv.IISTestAdminPassword))
+            $securedPassword = $global:g_testEnv.IISTestAdminPassword
             $keyPassword = convertto-securestring "xxx" -asplaintext -force
             $bogusPassword = convertto-securestring "bogus" -asplaintext -force
             
@@ -3560,7 +3561,7 @@ function TestScenario() {
             }
             
             LogComment("verify after enabling with IISAdministration")
-            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
             $iis = "na2"
             $iis = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
             # verify get after enabling
@@ -3588,7 +3589,7 @@ function TestScenario() {
                 }
             }
 
-            Enable-WebCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+            Enable-WebCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
             $web = "na"
             $web = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
 
@@ -3611,7 +3612,7 @@ function TestScenario() {
             }
         
             LogComment("Verify Clear-IISCentralCertProvider")
-            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword           
+            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword           
           
             if ((get-command Clear-IISCentralCertProvider).Parameters.Keys.Contains("Force"))
             {
@@ -3651,7 +3652,7 @@ function TestScenario() {
                     }
                 }
 
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword           
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword           
                 Clear-IISCentralCertProvider -Force
                 $result2 = get-iiscentralcertprovider
                 LogVerifyNumEq($result1.Count, $result2.Count, "Verify Clear-IISCentralCertProvider")
@@ -3662,14 +3663,14 @@ function TestScenario() {
                         LogVerifyStrEq($result1[$i], $result2[$i], ("Verify value of get command: " + $result1[$i]))
                     }
                 }
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword           
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword           
             }
             else
             {
                 Clear-IISCentralCertProvider -PrivateKeyPassword 
                 $iis = "na2"
                 $iis = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
                 Clear-WebCentralCertProvider -PrivateKeyPassword 
                 $web = "na"
                 $web = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
@@ -3695,11 +3696,11 @@ function TestScenario() {
             
             LogComment("Verify Set-IISCentralCertProvider")
             $properties = $web.Property            
-            Set-WebCentralCertProvider -UserName $username -Password $IISTestAdminPassword -PrivateKeyPassword xxx -CertStoreLocation "$env:systemdrive\inetpub"
+            Set-WebCentralCertProvider -UserName $username -Password $unsecuredPassword -PrivateKeyPassword xxx -CertStoreLocation "$env:systemdrive\inetpub"
             $web = "na"
             $web = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
             
-            Set-IISCentralCertProvider -UserName $username -Password $password -PrivateKeyPassword $keyPassword -CertStoreLocation "$env:systemdrive\inetpub"
+            Set-IISCentralCertProvider -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword -CertStoreLocation "$env:systemdrive\inetpub"
             $iis = "na2"
             $iis = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
 
@@ -3751,19 +3752,19 @@ function TestScenario() {
                 # Enable-IISCentralCertProvider test scenarios
                 #########################################
                 $Error.Clear(); $ErrorMsg = ""                
-                Enable-IISCentralCertProvider -CertStoreLocation $null -UserName $username -Password $password -PrivateKeyPassword $keyPassword 2> $null
+                Enable-IISCentralCertProvider -CertStoreLocation $null -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword 2> $null
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("CertStoreLocation")
                 LogVerifyTrue($BoolReturn, "Enable-IISCentralCertProvider: Verify error message of wrong CertStoreLocation")
 
                 $Error.Clear(); $ErrorMsg = ""                
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\notexistingIISCertCent" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\notexistingIISCertCent" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("should point to an existing path.")
                 LogVerifyTrue($BoolReturn, "Enable-IISCentralCertProvider: Verify error message of not existing CertStoreLocation")
 
                 $Error.Clear(); $ErrorMsg = ""                
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $null -Password $password -PrivateKeyPassword $keyPassword
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $null -Password $securedPassword -PrivateKeyPassword $keyPassword
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("UserName")
                 LogVerifyTrue($BoolReturn, "Enable-IISCentralCertProvider: Verify error message of null username")
@@ -3775,7 +3776,7 @@ function TestScenario() {
                 LogVerifyTrue($BoolReturn, "Enable-IISCentralCertProvider: Verify error message of wrong Password")
 
                 $Error.Clear(); $ErrorMsg = ""                
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $null
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $null
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("PrivateKeyPassword")
                 LogVerifyTrue($BoolReturn, "Enable-IISCentralCertProvider: Verify error message of null privatekeypassword")
@@ -3788,17 +3789,17 @@ function TestScenario() {
                 LogVerifyTrue(($Error[0] -eq $null), "Initially there should be no error")
 
                 $Error.Clear(); $ErrorMsg = ""
-                Set-IISCentralCertProvider -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+                Set-IISCentralCertProvider -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("Central Certificate Provider is disabled.")
                 LogVerifyTrue($BoolReturn, "Verify error message when feature is disabled")
                 
                 $Error.Clear(); $ErrorMsg = ""                
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
                 LogVerifyTrue(($Error[0] -eq $null), "There should be no error")
 
                 $Error.Clear(); $ErrorMsg = ""                
-                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+                Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
                 LogVerifyTrue(($Error[0] -eq $null), "There should be no error with retrial")
 
                 $Error.Clear(); $ErrorMsg = ""                
@@ -3820,13 +3821,13 @@ function TestScenario() {
                 LogVerifyTrue($BoolReturn, "Verify error message of not existing user")
 
                 $Error.Clear(); $ErrorMsg = ""                
-                Set-IISCentralCertProvider -UserName $null -Password $password -PrivateKeyPassword $keyPassword
+                Set-IISCentralCertProvider -UserName $null -Password $securedPassword -PrivateKeyPassword $keyPassword
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("UserName")
                 LogVerifyTrue($BoolReturn, "Verify error message of null username")
 
                 $Error.Clear(); $ErrorMsg = ""                
-                Set-IISCentralCertProvider -Password $password -PrivateKeyPassword $keyPassword
+                Set-IISCentralCertProvider -Password $securedPassword -PrivateKeyPassword $keyPassword
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("Either UserName or Password was missing.")
                 LogVerifyTrue($BoolReturn, "Verify error message of missing username")
@@ -4338,7 +4339,7 @@ function TestScenario() {
             LogComment("Export-IISConfiguration: create shared directory : " + $sharedUNCPath) 
             if (Get-FileShare -Name $FourBytesUnicodeSampleString)
             {
-                Remove-FileShare -Name $FourBytesUnicodeSampleString -Confirm:$false
+                Remove-FileShare -Name $FourBytesUnicodeSampleString -Confirm:$false 2> $null
             }
             if (test-path $sharedPath)
             {
@@ -4348,32 +4349,32 @@ function TestScenario() {
             net share $FourBytesUnicodeSampleString=$sharedPath /GRANT:everyone,FULL
 
             LogComment("Export-IISConfiguration: initialize variables") 
-            $username = ("$env:computername\" + $global:g_scriptUtil.IISTestAdminUser)
-            $IISTestAdminPassword = $global:g_scriptUtil.IISTestAdminPassword
-            $password = convertto-securestring $IISTestAdminPassword -asplaintext -force
+            $username = ($global:g_testEnv.IISTestAdminUser)
+            $unsecuredPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($global:g_testEnv.IISTestAdminPassword))
+            $securedPassword = $global:g_testEnv.IISTestAdminPassword
             $bogusPassword = convertto-securestring "bogus" -asplaintext -force
-            $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password) 
-            $password_plaintext = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR) 
+            $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($securedPassword) 
+            $securedPassword_plaintext = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR) 
 
             $keyEncryptionPassword = convertto-securestring "Password1!" -asplaintext -force
             $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($keyEncryptionPassword) 
             $keyEncryptionPassword_plaintext = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR) 
 
             LogComment("Export-IISConfiguration: Use -DontExportKeys parameter") 
-            Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -DontExportKeys
+            Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -DontExportKeys
             LogVerifyNumEq(2, (get-childitem $sharedPath).Length, "Export-IISConfiguration: Export with -DontExportKeys parameter")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\applicationhost.config").Length, (get-item "$sharedPath\applicationhost.config").Length, "Verify applicationhost.config")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
             
             LogComment("Export-IISConfiguration: Without -DontExportKeys parameter") 
-            Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -Force
+            Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -Force
             LogVerifyNumEq(3, (get-childitem $sharedPath).Length, "Export-IISConfiguration: Export without -DontExportKeys parameter")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\applicationhost.config").Length, (get-item "$sharedPath\applicationhost.config").Length, "Verify applicationhost.config")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
             
             LogComment("Export-IISConfiguration: Try again without -DontExportKeys parameter") 
             $SharedConfigBefore = get-childitem $sharedPath
-            Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -Force
+            Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -Force
             LogVerifyNumEq(3, (get-childitem $sharedPath).Length, "Export-IISConfiguration: Export without -DontExportKeys parameter again and verify files are newly overwritte")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\applicationhost.config").Length, (get-item "$sharedPath\applicationhost.config").Length, "Verify applicationhost.config")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
@@ -4394,7 +4395,7 @@ function TestScenario() {
             
             remove-item "$sharedPath\configEncKeyAes.key"
             remove-item "$sharedPath\administration.config" -Confirm:$false 
-            Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -Force -DontExportKeys
+            Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -Force -DontExportKeys
             LogVerifyNumEq(2, (get-childitem $sharedPath).Length, "Export-IISSharedConfig: Number of exported files with -force")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\applicationhost.config").Length, (get-item "$sharedPath\applicationhost.config").Length, "Verify applicationhost.config")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
@@ -4402,7 +4403,7 @@ function TestScenario() {
             Remove-IISSite -Name NewTestSite_Foo -Confirm:$false
             LogVerifyFalse((get-iissite -name NewTestSite_Foo), "Verify site is removed")
            
-            Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -Force
+            Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -Force
             LogVerifyNumEq(3, (get-childitem $sharedPath).Length, "Export-IISSharedConfig:  try again with UNC path")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\applicationhost.config").Length, (get-item "$sharedPath\applicationhost.config").Length, "Verify applicationhost.config")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
@@ -4411,7 +4412,7 @@ function TestScenario() {
             $before = (get-item "$sharedPath\configEncKeyAes.key").Length
             new-item -ItemType file -value bogus ("$sharedPath\applicationhost.config") -Force 
             new-item -ItemType file -value bogus ("$sharedPath\administration.config") -Force 
-            Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
+            Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
             LogVerifyNumEq(3, (get-childitem $sharedPath).Length, "Export-IISSharedConfig: try again with UNC path with -force after modifying files in the output path directory")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\applicationhost.config").Length, (get-item "$sharedPath\applicationhost.config").Length, "Verify applicationhost.config")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
@@ -4444,7 +4445,7 @@ function TestScenario() {
             LogComment("Enable-IISSharedConfig: -DontCopyRemoteKeys") 
             $CNGKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\Keys"
             $RSAKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\RSA\MachineKeys"
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedPath -DontCopyRemoteKeys
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -DontCopyRemoteKeys
             $beforebackupKeyFile = get-item $backupKeyFilePath
             LogVerifyTrue(($beforebackupKeyFile -ne $null), "Verify key backup file is created even though -DontCopyRemoteKeys are used")
    
@@ -4472,7 +4473,7 @@ function TestScenario() {
                 $RSAKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\RSA\MachineKeys"
 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Shared Configuration is already enabled.')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of invalid username")
@@ -4525,7 +4526,7 @@ function TestScenario() {
             LogVerifyFalse((Test-Path $NewSharePath), ("Verify the share directory is removed:" + $NewSharePath))
 
             LogComment("Enable-IISSharedConfig: Try -DontCopyRemoteKeys again") 
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedPath -DontCopyRemoteKeys -Force
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -DontCopyRemoteKeys -Force
             
             $result = "na"
             $result = Get-IISSharedConfig
@@ -4544,7 +4545,7 @@ function TestScenario() {
             $beforebackupKeyFile = get-item $backupKeyFilePath
             $CNGKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\Keys"
             $RSAKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\RSA\MachineKeys"
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -force
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -force
             LogVerifyTrue(($beforebackupKeyFile.CreationTime -eq (get-item $backupKeyFilePath).CreationTime), "Verify keyBackup file is not changed")
 
             md $NewSharePath
@@ -4675,7 +4676,7 @@ function TestScenario() {
             LogComment("Enable-IISSharedConfig: Try again") 
             $CNGKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\Keys"
             $RSAKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\RSA\MachineKeys"
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
             $result = "na"
             $result = Get-IISSharedConfig
             LogVerifyStrEq("Enabled = True", $result[0].Trim(), "Enable-IISSharedConfig: Enable shared configuration")
@@ -4694,7 +4695,7 @@ function TestScenario() {
             LogVerifyTrue(($beforebackupKeyFile -ne $null), "Verify key backup file is created")
 
             # try enabling again and verify keybackup file is not changed
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -force
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword -force
             LogVerifyTrue(($beforebackupKeyFile.CreationTime -eq (get-item $backupKeyFilePath).CreationTime), "Verify keyBackup file has no change")
 
             LogComment("Disable-IISSharedConfig: Try again") 
@@ -4720,7 +4721,7 @@ function TestScenario() {
             LogComment("Enable-IISSharedConfig: Use UNC path") 
             $CNGKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\Keys"
             $RSAKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\RSA\MachineKeys"
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
             $result = "na"
             $result = Get-IISSharedConfig
             LogVerifyStrEq("Enabled = True", $result[0].Trim(), "Enable-IISSharedConfig: try again")
@@ -4772,7 +4773,7 @@ function TestScenario() {
                 LogComment("Enable-IISSharedConfig: Error handling against bogusPassword") 
                 $configBefore = get-childitem "$env:windir\system32\inetsrv\config"
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $bogusPassword -force
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $bogusPassword -force
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Invalid password')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of invalid keyEncryptionPassword")
@@ -4790,7 +4791,7 @@ function TestScenario() {
             
             # Verify keybackup file is not changed after enabling again
             $configBefore = get-childitem "$env:windir\system32\inetsrv\config" | where-Object Name -ne redirection.config
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
             $configAfter = get-childitem "$env:windir\system32\inetsrv\config" | where-Object Name -ne redirection.config 
             
             $compareConfig = compare-object -referenceobject ($configBefore).LastWriteTime -differenceobject ($configAfter).LastWriteTime
@@ -4848,7 +4849,7 @@ function TestScenario() {
             {
                 Remove-IISSite -name CreatedToShared -Confirm:$false
             }
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
             Start-Sleep 3
             $configBefore = get-childitem "$env:windir\system32\inetsrv\config" -filter *.config | where-object Name -ne redirection.config
             $CNGKeysBefore = get-childitem "$env:systemdrive\ProgramData\Application Data\microsoft\Crypto\Keys"
@@ -4893,7 +4894,7 @@ function TestScenario() {
             Remove-IISSite -name CreatedToShared -Confirm:$false
 
             # Enable shared config and remove the site from the shared config
-            Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
+            Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
             $result = "na"
             $result = Get-IISSite -name CreatedToShared
             LogVerifyTrue(($result -ne $null), "verify the local applicationhost config is updated with the new site")
@@ -4921,10 +4922,10 @@ function TestScenario() {
 
             LogComment("E2E: Backup config value of IISCentralCertProvider of two differenct value sets") 
             $keyPassword = convertto-securestring "xxx" -asplaintext -force
-            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
             $before = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
             $keyPassword2 = convertto-securestring "xxx2" -asplaintext -force
-            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword2
+            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword2
             $before2 = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
 
             LogComment("E2E: Create a new web site") 
@@ -4946,7 +4947,7 @@ function TestScenario() {
             md $sharedPath
 
             LogComment("E2E: Export config so that the first site is exported together") 
-            Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword
+            Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\applicationhost.config").Length, (get-item "$sharedPath\applicationhost.config").Length, "Verify applicationhost.config")
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
 
@@ -4977,7 +4978,7 @@ function TestScenario() {
             LogVerifyNumEq((get-item "$env:windir\system32\inetsrv\config\administration.config").Length, (get-item "$sharedPath\administration.config").Length, "Verify administration.config")
             
             LogComment("E2E: Enabling IISSharedConfig") 
-            Enable-IISSharedConfig  -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
+            Enable-IISSharedConfig  -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword -force
 
             LogComment("E2E: Verify Central Cert Provider settings are preserved after enabling IISSharedConfig") 
             $after2 = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
@@ -4990,7 +4991,7 @@ function TestScenario() {
             }
 
             LogComment("E2E: Update Central Cert Provider settings after enabling IISSharedConfig") 
-            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword
             $after = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
             for ($i=0; $i-lt $after.Property.count; $i++) 
             { 
@@ -5053,7 +5054,7 @@ function TestScenario() {
             }
 
             LogComment("E2E: Modify Central Cert Provider settings are preserved after disabling IISSharedConfig") 
-            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $password -PrivateKeyPassword $keyPassword2
+            Enable-IISCentralCertProvider -CertStoreLocation "$env:systemdrive\inetpub" -UserName $username -Password $securedPassword -PrivateKeyPassword $keyPassword2
             $after2 = get-item HKLM:\SOFTWARE\Microsoft\iis\CentralCertProvider
             for ($i=0; $i-lt $after2.Property.count; $i++) 
             { 
@@ -5090,7 +5091,7 @@ function TestScenario() {
             LogVerifyTrue((get-iissite -name NewTestSite2), "Copy-IISRemoteConfigToLocal import config again and the config should go to the previous state - site2")
 
             LogComment("E2E: Enable shared config then remove the sites again") 
-            Enable-IISSharedConfig  -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword
+            Enable-IISSharedConfig  -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword
             LogVerifyTrue((get-iissite -name NewTestSite), "enable shared config then remove the sites again - site1")
             LogVerifyTrue((get-iissite -name NewTestSite2), "enable shared config then remove the sites again - site2")            
             Remove-IISSite -Name NewTestSite -Confirm:$false
@@ -5135,31 +5136,31 @@ function TestScenario() {
                 # Export-IISConfiguration test scenarios
                 #########################################
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Configuration files already exist in the specified path')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of already exist")
 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName $username -Password $password -PhysicalPath ("$sharedPath" + "NotExisting") -KeyEncryptionPassword $keyEncryptionPassword 
+                Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath ("$sharedPath" + "NotExisting") -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Cannot access the location')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of not existing path")               
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName "bogusUser" -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Export-IISConfiguration -UserName "bogusUser" -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Cannot access the location')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of invalid user")               
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName $null -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Export-IISConfiguration -UserName $null -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('UserName')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of invalid UserName")               
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Export-IISConfiguration -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Export of configuration files failed')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of missing UserName")               
@@ -5171,7 +5172,7 @@ function TestScenario() {
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of invalid password")               
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName $username -Password $IISTestAdminPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Export-IISConfiguration -UserName $username -Password $unsecuredPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Password')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of invalid password")               
@@ -5183,13 +5184,13 @@ function TestScenario() {
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of missing password")               
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $bogusPassword 
+                Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $bogusPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('The specified password is not a strong password')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of not strong password")               
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword "Password1!"
+                Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword "Password1!"
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('KeyEncryptionPassword')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of clear text password of KeyEncryptionPassword")               
@@ -5201,7 +5202,7 @@ function TestScenario() {
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of null Password")               
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Export-IISConfiguration -UserName $username -Password $password -PhysicalPath $null -KeyEncryptionPassword $keyEncryptionPassword 
+                Export-IISConfiguration -UserName $username -Password $securedPassword -PhysicalPath $null -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('PhysicalPath')
                 LogVerifyTrue($BoolReturn, "Export-IISSharedConfig: Verify error message of invalid PhysicalPath")               
@@ -5230,37 +5231,37 @@ function TestScenario() {
                 #########################################
 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath ($sharedUNCPath + "bogus") -KeyEncryptionPassword $keyEncryptionPassword -DontCopyRemoteKeys
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath ($sharedUNCPath + "bogus") -KeyEncryptionPassword $keyEncryptionPassword -DontCopyRemoteKeys
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("KeyEncryptionPassword is specified")
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of not existing physical path")
 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath ($sharedUNCPath + "bogus") -DontCopyRemoteKeys
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath ($sharedUNCPath + "bogus") -DontCopyRemoteKeys
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("Configuration Files don't exist in location")
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of not existing physical path")
 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath ("$env:systemdrive\inetpub") -KeyEncryptionPassword $keyEncryptionPassword 
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath ("$env:systemdrive\inetpub") -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("Configuration Files don't exist in location")
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of not existing configuration files")
 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName "bogus\bogus" -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Enable-IISSharedConfig -UserName "bogus\bogus" -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Cannot access the location')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of invalid username")
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Enable-IISSharedConfig -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Cannot access the location')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of missing username")
                  
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $null -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
+                Enable-IISSharedConfig -UserName $null -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('UserName')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of invalid username")
@@ -5284,19 +5285,19 @@ function TestScenario() {
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of missing Password")
 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName "administrator" -Password $password -PhysicalPath $null -KeyEncryptionPassword $keyEncryptionPassword
+                Enable-IISSharedConfig -UserName "administrator" -Password $securedPassword -PhysicalPath $null -KeyEncryptionPassword $keyEncryptionPassword
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('PhysicalPath')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of invalid PhysicalPath")
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $null 
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $null 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('KeyEncryptionPassword')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of invalid KeyEncryptionPassword")
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath 
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('The parameter KeyEncryptionPassword was not provided.')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of missing KeyEncryptionPassword without DontCopy parameter")
@@ -5307,7 +5308,7 @@ function TestScenario() {
                 LogVerifyTrue(($compareConfig -eq $null), "Verify Config files are not not updated")
                 
                 $Error.Clear(); $ErrorMsg = ""
-                Enable-IISSharedConfig -UserName $username -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $bogusPassword 
+                Enable-IISSharedConfig -UserName $username -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $bogusPassword 
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains('Invalid password')
                 LogVerifyTrue($BoolReturn, "Enable-IISSharedConfig: Verify error message of invalid KeyEncryptionPassword")
@@ -5381,15 +5382,15 @@ function TestScenario() {
         if ( IISTest-Ready )
         {
             # Clean up test environment
-            $IISTestAdminPassword = $global:g_scriptUtil.IISTestAdminPassword
-            $password = convertto-securestring $IISTestAdminPassword -asplaintext -force
+            $unsecuredPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($global:g_testEnv.IISTestAdminPassword))
+            $securedPassword = $global:g_testEnv.IISTestAdminPassword
             $nonAdminUser = "nonAdminUser"
             $existingUser = Get-LocalUser -Name $nonAdminUser -ErrorAction SilentlyContinue
             if ($existingUser)
             {
                Remove-LocalUser -Name $nonAdminUser -Confirm:$false
             }
-            New-LocalUser -name $nonAdminUser -Password $password
+            New-LocalUser -name $nonAdminUser -Password $securedPassword
 
             LogComment("Initial cleanup: prepare the clean state of redirection.config and then verify initial state")
             Reset-IISServerManager -Confirm:$false
@@ -5442,8 +5443,8 @@ function TestScenario() {
 
             # configure IIS Shared Configuration
             $keyEncryptionPassword = convertto-securestring "Password1!" -asplaintext -force            
-            Export-IISConfiguration -UserName $nonAdminUser -Password $password -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword
-            Enable-IISSharedConfig -UserName $nonAdminUser -Password $password -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword
+            Export-IISConfiguration -UserName $nonAdminUser -Password $securedPassword -PhysicalPath $sharedPath -KeyEncryptionPassword $keyEncryptionPassword
+            Enable-IISSharedConfig -UserName $nonAdminUser -Password $securedPassword -PhysicalPath $sharedUNCPath -KeyEncryptionPassword $keyEncryptionPassword
 
             # Restart W3SVC and verify WAS and W3SVC
             Stop-Service W3SVC
@@ -5482,7 +5483,7 @@ function TestScenario() {
             LogVerifyNumEq($sites_after.count, $sites_before.count, "No change after disabling IIS Shared Config")
 
             # cleanup
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
             if (Get-LocalUser -Name $nonAdminUser)
             {
                Remove-LocalUser -Name $nonAdminUser -Confirm:$false
@@ -5500,7 +5501,7 @@ function TestScenario() {
 
         LogEndTest
     }
-
+    #>
     if ( LogStartTest("Verify IISSiteBinding cmdlets", 133745) -eq $true)
     {
         $SiteBindingCmdletAvailable = (get-command -Name "New-IISSiteBinding") -ne $null
@@ -5554,13 +5555,13 @@ function TestScenario() {
             $user = "foo"                
             if ($temp[0].Contains("Enabled") -and $temp[0].Contains("False")) {
                 $PrivateKeyPassword = "xxx"
-                $passwordSecure = convertto-securestring iis6!dfu -asplaintext -force
+                $securedPasswordSecure = convertto-securestring iis6!dfu -asplaintext -force
                 $PrivateKeyPasswordSecure = convertto-securestring $PrivateKeyPassword -asplaintext -force 
                 $temp = Get-LocalUser -Name $user -ErrorAction SilentlyContinue
                 if ($temp -eq $null) {
-                    New-LocalUser -Name $user -Password $passwordSecure
+                    New-LocalUser -Name $user -Password $securedPasswordSecure
                 }
-                Enable-IISCentralCertProvider -CertStoreLocation $sharedPath -UserName $user -Password $passwordSecure -PrivateKeyPassword $PrivateKeyPasswordSecure
+                Enable-IISCentralCertProvider -CertStoreLocation $sharedPath -UserName $user -Password $securedPasswordSecure -PrivateKeyPassword $PrivateKeyPasswordSecure
             }
             $temp = Get-IISCentralCertProvider
             LogVerifyTrue(($temp[0].Contains("Enabled") -and $temp[0].Contains("True")), "Centralized Certificate Store is enabled")
@@ -6166,7 +6167,7 @@ function TestScenario() {
             dir Cert:\LocalMachine\root | Where-Object {$_.Subject -eq "CN=foo.com" } | remove-item
             dir Cert:\LocalMachine\webhosting | Where-Object {$_.Subject -eq "CN=foo.com" } | remove-item
             
-            RestoreAppHostConfig
+            IISTest-RestoreAppHostConfig
 
             # Disable CCS
             $temp = Get-IISCentralCertProvider

@@ -599,6 +599,23 @@ function global:IISTest-ImportWebAdministration ()
     }
 }
 
+function global:Reset-IISTestCredential ([switch] $force)
+{
+    if ($force -or $global:g_password -eq $null)
+    {
+        $credential = Get-Credential -Message "Initialize administrator password for running IISAdministration test" -UserName "$env:COMPUTERNAME\administrator"
+        $global:g_userName = $credential.UserName
+        $global:g_password = $credential.Password
+
+        add-member -in $global:g_testEnv noteproperty IISTestAdminUser $global:g_userName -Force
+        add-member -in $global:g_testEnv noteproperty IISTestAdminPassword $global:g_password -Force
+    }
+    else
+    {
+        ("Use -Force switch to overwrite existing username and password")
+    }
+}
+
 #////////////////////////////////////////////
 #
 #Routine Description: 
@@ -649,16 +666,8 @@ if ($culture -eq $null)
     $global:culture = (Get-UICulture).name
 }
 
-if ($global:g_userName -eq $null)
-{
-    $credential = Get-Credential -Message "Initialize administrator password for running IISAdministration test" -UserName "administrator"
-    $global:g_userName = $credential.UserName
-    $global:g_password = $credential.Password
-}
-
 $global:g_scriptUtil = new-object psobject
-add-member -in $global:g_scriptUtil noteproperty IISTestAdminUser $global:g_userName
-add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword $global:g_password
+global:Reset-IISTestCredential -force:$false
 
 $global:g_testEnv = new-object psobject
 add-member -in $global:g_testEnv noteproperty WebSite1 "Default Web Site"
