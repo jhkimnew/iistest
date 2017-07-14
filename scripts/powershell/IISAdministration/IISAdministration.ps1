@@ -12,16 +12,23 @@
 
 # Disale transcript by default
 $global:transScriptFile = "SKIP"
-$runtimeDeirectory = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
 
-# Set g_testDir, which is supposed to be set by the driver.js when this ps1 file is executed
+# Initialze $global:g_testDir
 if ($global:g_testDir -eq $null)
-{  
-    $tempPath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-    $tempPath = Split-Path -Parent -Path $tempPath
-    $tempPath = Split-Path -Parent -Path $tempPath
-    $tempPath = Split-Path -Parent -Path $tempPath
-    $global:g_testDir = $tempPath
+{
+    $currentPath = $MyInvocation.MyCommand.Definition
+    if (Test-Path $currentPath)
+    {
+        $tempPath = Split-Path -Parent -Path $currentPath
+        $tempPath = Split-Path -Parent -Path $tempPath
+        $tempPath = Split-Path -Parent -Path $tempPath
+        $tempPath = Split-Path -Parent -Path $tempPath
+        $global:g_testDir = $tempPath
+    }
+    else
+    {
+        ("Failed to initialize g_testDir, try to set the global variable manually as a workaround")
+    }
 }
 
 # Excute test framework to load libary functions and variables

@@ -6,25 +6,8 @@
 #
 # Abstract:
 #    
-#    Include file for all Powershell based test scripts in IIS test team
+#    Include file for all Powershell based test
 #
-#
-# Author:
-#
-#    Jeong Hwan Kim (jhkim)  13-June-2008     Created
-#    Mark Kuang (v-markua)   20-Jan-2015      Updated
-
-#
-# References:
-#   
-#    For a documented list of global functions and variables, use:
-#        findstr /c:"function global:" Powershell_Common_Include.ps1
-#        findstr /c:"$global:" IISProvider_Common_Include.ps1
-#
-#    Recommended usage:
-#    1. Create a global include file for your test area
-#    2. Excute IISProvider_common_include.ps1 from the file of #1
-#    3. Excute #1 inside of all your test scripts
 #////////////////////////////////////////////
 $global:g_serverManager = $false
 

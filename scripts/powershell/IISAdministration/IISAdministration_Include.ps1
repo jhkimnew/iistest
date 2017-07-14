@@ -11,25 +11,16 @@
 #///////////////////////////////////////////////////////////////////////////////
 
 # Set g_testDir, which is supposed to be set by the driver.js when this ps1 file is executed
-if ($global:g_testDir -eq $null)
-{  
-    $tempPath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
-    $tempPath = Split-Path -Parent -Path $tempPath
-    $tempPath = Split-Path -Parent -Path $tempPath
-    $tempPath = Split-Path -Parent -Path $tempPath
-    $global:g_testDir = $tempPath
-}
+$tempPath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+$tempPath = Split-Path -Parent -Path $tempPath
+$tempPath = Split-Path -Parent -Path $tempPath
+$tempPath = Split-Path -Parent -Path $tempPath
+$global:g_testDir = $tempPath
 
 #
 # Excute test framework to load libary functions and variables
 #
 &($global:g_testDir+'\scripts\Powershell\Powershell_Common_Include.ps1')
-
-#
-# Local variables
-#
-$rootWebconfigPath = Join-Path -path $runtimeDeirectory -childpath "config\web.config"
-$rootWebconfigBackupPath = Join-Path -path $runtimeDeirectory -childpath "config\web_backup.config"
 
 $IISVersionMaj = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\InetStp" -Name "MajorVersion").MajorVersion
 if($IISVersionMaj -ge 10)
@@ -384,8 +375,19 @@ function global:IISTest-SafeDelete($targetFilePath)
     LogDebug ("End IISTest-SafeDelete...")
 }
 
+#////////////////////////////////////////////
+#
+# Routine Description: 
+#
+#    Restore Root web.config
+#
+#////////////////////////////////////////////
 function global:IISTest-RestoreRootWebConfig()
 {
+    $runtimeDeirectory = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
+    $rootWebconfigPath = Join-Path -path $runtimeDeirectory -childpath "config\web.config"
+    $rootWebconfigBackupPath = Join-Path -path $runtimeDeirectory -childpath "config\web_backup.config"
+
     if((Test-Path $rootWebconfigBackupPath) -ne $true)
     {
         BackupRootWebConfig
@@ -394,8 +396,19 @@ function global:IISTest-RestoreRootWebConfig()
     Copy-Item -Path $rootWebconfigBackupPath -Destination $rootWebconfigPath -Force
 }
 
+#////////////////////////////////////////////
+#
+# Routine Description: 
+#
+#    Backup Root web.config and restore
+#
+#////////////////////////////////////////////
 function global:IISTest-BackupRootWebConfig()
 {
+    $runtimeDeirectory = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()    
+    $rootWebconfigPath = Join-Path -path $runtimeDeirectory -childpath "config\web.config"
+    $rootWebconfigBackupPath = Join-Path -path $runtimeDeirectory -childpath "config\web_backup.config"
+
     if (-not (test-path $rootWebconfigBackupPath))
     {
         Copy-Item -Path $rootWebconfigPath -Destination $rootWebconfigBackupPath -Force    
@@ -403,6 +416,13 @@ function global:IISTest-BackupRootWebConfig()
     global:IISTest-RestoreRootWebConfig
 }
 
+#////////////////////////////////////////////
+#
+# Routine Description: 
+#
+#    Restore applicationhost.config
+#
+#////////////////////////////////////////////
 function global:IISTest-RestoreAppHostConfig()
 {
     Stop-Service W3SVC
@@ -411,6 +431,13 @@ function global:IISTest-RestoreAppHostConfig()
     Start-Service W3SVC
 }
 
+#////////////////////////////////////////////
+#
+# Routine Description: 
+#
+#    Backup applicationhost.config and restore
+#
+#////////////////////////////////////////////
 function global:IISTest-BackupAppHostConfig()
 {
     if (-not (test-path $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak))
