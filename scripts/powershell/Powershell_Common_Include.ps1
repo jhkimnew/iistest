@@ -606,7 +606,10 @@ function global:Reset-IISTestCredential ([switch] $force)
         $credential = Get-Credential -Message "Initialize administrator password for running IISAdministration test" -UserName "$env:COMPUTERNAME\administrator"
         $global:g_userName = $credential.UserName
         $global:g_password = $credential.Password
-
+    }
+    
+    if ($global:g_password -ne $null)
+    {
         add-member -in $global:g_testEnv noteproperty IISTestAdminUser $global:g_userName -Force
         add-member -in $global:g_testEnv noteproperty IISTestAdminPassword $global:g_password -Force
     }
@@ -667,7 +670,6 @@ if ($culture -eq $null)
 }
 
 $global:g_scriptUtil = new-object psobject
-global:Reset-IISTestCredential -force:$false
 
 $global:g_testEnv = new-object psobject
 add-member -in $global:g_testEnv noteproperty WebSite1 "Default Web Site"
@@ -679,6 +681,7 @@ add-member -in $global:g_testEnv noteproperty foundFailure $false
 add-member -in $global:g_testEnv noteproperty totalPassedTestCase 0
 add-member -in $global:g_testEnv noteproperty totalFailedTestCase 0
 add-member -in $global:g_testEnv noteproperty targetTestcases $null
+global:Reset-IISTestCredential -force:$false
  
 #////////////////////////////////////////////
 #
