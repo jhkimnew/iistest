@@ -8,32 +8,25 @@
 #    
 #    Functional tests for IISAdministration
 #
-#
-# Author:
-#
-#    FlagIris Shi (v-flshi)      10-Jan-2015     Created
-#    Mark Kuang (v-markua)       13-Fre-2015     Updated
-#    Maity Chen (v-mchen)        07-Apr-2015     Updated
-#    Simon Xu (v-sixu)           30-Apr-2015     Updated
-#    Jeong Hwan Kim (jhkim)      01-Jan-2016     Updated
-#
-#
 #///////////////////////////////////////////////////////////////////////////////
-# Disale transcript, as there are huge amounts of lines to output for #129150 that would hange the script over 30 minutes.
+
+# Disale transcript by default
 $global:transScriptFile = "SKIP"
 $runtimeDeirectory = [System.Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()
-$rootWebconfigPath = Join-Path -path $runtimeDeirectory -childpath "config\web.config"
-$rootWebconfigBackupPath = Join-Path -path $runtimeDeirectory -childpath "config\web_backup.config"
 
 # Set g_testDir, which is supposed to be set by the driver.js when this ps1 file is executed
-if ($g_testDir -eq $null)
+if ($global:g_testDir -eq $null)
 {  
-    $global:g_testDir = join-path $env:windir "system32\webtest"
+    $tempPath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+    $tempPath = Split-Path -Parent -Path $tempPath
+    $tempPath = Split-Path -Parent -Path $tempPath
+    $tempPath = Split-Path -Parent -Path $tempPath
+    $global:g_testDir = $tempPath
 }
 
 # Excute test framework to load libary functions and variables
 #
-&($g_testDir+'\scripts\Powershell\IISAdministration\IISAdministration_Include.ps1')
+&($global:g_testDir+'\scripts\Powershell\IISAdministration\IISAdministration_Include.ps1')
 
 $IISVersionMaj = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\InetStp" -Name "MajorVersion").MajorVersion
 if($IISVersionMaj -ge 10)
@@ -70,40 +63,6 @@ function Terminate($objContext) {
         return $false;
     }    
     return $true     
-}
-
-function BackupRootWebConfig()
-{
-    if (-not (test-path $rootWebconfigBackupPath))
-    {
-        Copy-Item -Path $rootWebconfigPath -Destination $rootWebconfigBackupPath -Force    
-    }
-}
-
-function RestoreRootWebConfig()
-{
-    if((Test-Path $rootWebconfigBackupPath) -ne $true)
-    {
-        BackupRootWebConfig
-        Start-Sleep 1
-    }
-    Copy-Item -Path $rootWebconfigBackupPath -Destination $rootWebconfigPath -Force
-}
-
-function BackupAppHostConfig()
-{
-    if (-not (test-path $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak))
-    {
-        Copy-Item -Path $env:systemroot\system32\inetsrv\config\applicationHost.config -Destination $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak -Force
-    }
-}
-
-function RestoreAppHostConfig()
-{
-    Stop-Service W3SVC
-    Stop-Service WAS
-    Copy-Item -Path $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak -Destination $env:systemroot\system32\inetsrv\config\applicationHost.config -Force
-    Start-Service W3SVC
 }
 
 function TestScenario() {
@@ -509,7 +468,7 @@ function TestScenario() {
         if ( IISTest-Ready )
         {
             
-            $result = (Get-IISAppPool).Count
+            $result = (Get-IISAppPool -Name DefaultAppPool,".NET v4.5 Classic",".NET v4.5").count
             #1: DefaultAppPool
             #2: .NET v4.5 Classic
             #3: .NET v4.5
@@ -3060,8 +3019,15 @@ function TestScenario() {
 
             $registry =  (get-item HKLM:\Software\Microsoft\.NETFramework)
             $netFXRootPath = $registry.GetValue("InstallRoot")
-            $v2Path = dir $netFXRootPath -filter $v2Version
+            $v4Path = dir $netFXRootPath -filter "v4.0.*" | Select-Object -First 1
+            LogVerifyTrue(($v4Path -ne $null) , "Verify .Net V4 installed")
+            # reset $v4Version if it is not matched to the installed version
+            if ($v4Version -ne $v4Path.Name)
+            {
+                $v4Version = $v4Path.Name
+            }
 
+            $v2Path = dir $netFXRootPath -filter "v2.0.*" | Select-Object -First 1
             if ($v2Path -eq $null) 
             {
                 new-item ($netFXRootPath + "\" + $v2Version) -type directory
@@ -3069,6 +3035,12 @@ function TestScenario() {
             } 
             else 
             {
+                # reset $v2Version if it is not matched to the installed version
+                if ($v2Version -ne $v2Path.Name)
+                {
+                    $v2Version = $v2Path.Name
+                }
+
                 # if mscorlib.dll exists, don't need to create fake .Net 2.0 directory
                 if ($null -eq  (dir ($netFXRootPath + "\" + $v2Version) -filter mscorlib.dll)) 
                 {
@@ -3107,7 +3079,7 @@ function TestScenario() {
 
                 # preparation    
                 cd ("iis:\sites\" + $targetSite)           
-                remove-item $targetPhysicalDirectory -confirm:$false -recurse
+                remove-item $targetPhysicalDirectory -confirm:$false -recurse 2> $null
                 new-item -type directory $targetPhysicalDirectory
                 New-WebApplication -site $targetSite -name $targetApp -PhysicalPath $targetPhysicalDirectory
                 new-item -type file ($targetPhysicalDirectory + "\file.txt")
@@ -3541,7 +3513,7 @@ function TestScenario() {
             # test scenarios                        
             $username = ("$env:computername\" + $global:g_scriptUtil.IISTestAdminUser)
             $IISTestAdminPassword = $global:g_scriptUtil.IISTestAdminPassword
-            $password = convertto-securestring $IISTestAdminPassword -asplaintext -force
+            $password = $IISTestAdminPassword
             $keyPassword = convertto-securestring "xxx" -asplaintext -force
             $bogusPassword = convertto-securestring "bogus" -asplaintext -force
             
@@ -3747,7 +3719,7 @@ function TestScenario() {
                 # Enable-IISCentralCertProvider test scenarios
                 #########################################
                 $Error.Clear(); $ErrorMsg = ""                
-                Enable-IISCentralCertProvider -CertStoreLocation $null -UserName $username -Password $password -PrivateKeyPassword $keyPassword
+                Enable-IISCentralCertProvider -CertStoreLocation $null -UserName $username -Password $password -PrivateKeyPassword $keyPassword 2> $null
                 $ErrorMsg = $Error[0].ToString()
                 $BoolReturn=$ErrorMsg.Contains("CertStoreLocation")
                 LogVerifyTrue($BoolReturn, "Enable-IISCentralCertProvider: Verify error message of wrong CertStoreLocation")
@@ -3874,7 +3846,6 @@ function TestScenario() {
         }
 
         LogEndTest
-        
     }
 
     if ( LogStartTest("Verify AddAt parameter", 133456) -eq $true)
@@ -6186,12 +6157,14 @@ function TestScenario() {
     }
 }
 
-BackupRootWebConfig
-BackupAppHostConfig
-RestoreAppHostConfig
+IISTest-BackupAppHostConfig
+IISTest-BackupRootWebConfig
+
 #
 # Call global function of RunTest to launch all test scenarios
 #
 RunTest
+
 # We have changed some settings in root web.config, so need to restore in case they will make other test fail, such as ddsuiteUI tests.
-RestoreRootWebConfig
+IISTest-RestoreAppHostConfig
+IISTest-RestoreRootWebConfig

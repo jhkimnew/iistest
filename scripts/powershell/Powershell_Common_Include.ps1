@@ -666,9 +666,16 @@ if ($culture -eq $null)
     $global:culture = (Get-UICulture).name
 }
 
+if ($global:g_userName -eq $null)
+{
+    $credential = Get-Credential -Message "Initialize administrator password for running IISAdministration test" -UserName "administrator"
+    $global:g_userName = $credential.UserName
+    $global:g_password = $credential.Password
+}
+
 $global:g_scriptUtil = new-object psobject
-add-member -in $global:g_scriptUtil noteproperty IISTestAdminUser "administrator"
-add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword "iis6!dfu"
+add-member -in $global:g_scriptUtil noteproperty IISTestAdminUser $global:g_userName
+add-member -in $global:g_scriptUtil noteproperty IISTestAdminPassword $global:g_password
 
 $global:g_testEnv = new-object psobject
 add-member -in $global:g_testEnv noteproperty WebSite1 "Default Web Site"

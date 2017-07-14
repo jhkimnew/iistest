@@ -1,31 +1,35 @@
 #///////////////////////////////////////////////////////////////////////////////
 #
-#Module Name:
+# Module Name:
 #    
 #    IISProvider_Include.ps1
 #
-#Abstract:
+# Abstract:
 #    
 #    Include file for testing IIS Powershell Provider
-#
-#
-#Author:
-#
-#    Jeong Hwan Kim (jhkim)      11-July-2008     Created
-#    Simon Xu (v-sixu)           27-Jan-2015      Updated
 #
 #///////////////////////////////////////////////////////////////////////////////
 
 # Set g_testDir, which is supposed to be set by the driver.js when this ps1 file is executed
-if ($g_testDir -eq $null)
-{
-    $global:g_testDir = join-path $env:windir "system32\webtest"
+if ($global:g_testDir -eq $null)
+{  
+    $tempPath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+    $tempPath = Split-Path -Parent -Path $tempPath
+    $tempPath = Split-Path -Parent -Path $tempPath
+    $tempPath = Split-Path -Parent -Path $tempPath
+    $global:g_testDir = $tempPath
 }
 
 #
 # Excute test framework to load libary functions and variables
 #
-&($g_testDir+'\scripts\Powershell\Powershell_Common_Include.ps1')
+&($global:g_testDir+'\scripts\Powershell\Powershell_Common_Include.ps1')
+
+#
+# Local variables
+#
+$rootWebconfigPath = Join-Path -path $runtimeDeirectory -childpath "config\web.config"
+$rootWebconfigBackupPath = Join-Path -path $runtimeDeirectory -childpath "config\web_backup.config"
 
 $IISVersionMaj = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\InetStp" -Name "MajorVersion").MajorVersion
 if($IISVersionMaj -ge 10)
@@ -380,4 +384,38 @@ function global:IISTest-SafeDelete($targetFilePath)
     LogDebug ("End IISTest-SafeDelete...")
 }
 
+function global:IISTest-RestoreRootWebConfig()
+{
+    if((Test-Path $rootWebconfigBackupPath) -ne $true)
+    {
+        BackupRootWebConfig
+        Start-Sleep 1
+    }
+    Copy-Item -Path $rootWebconfigBackupPath -Destination $rootWebconfigPath -Force
+}
 
+function global:IISTest-BackupRootWebConfig()
+{
+    if (-not (test-path $rootWebconfigBackupPath))
+    {
+        Copy-Item -Path $rootWebconfigPath -Destination $rootWebconfigBackupPath -Force    
+    }
+    global:IISTest-RestoreRootWebConfig
+}
+
+function global:IISTest-RestoreAppHostConfig()
+{
+    Stop-Service W3SVC
+    Stop-Service WAS
+    Copy-Item -Path $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak -Destination $env:systemroot\system32\inetsrv\config\applicationHost.config -Force
+    Start-Service W3SVC
+}
+
+function global:IISTest-BackupAppHostConfig()
+{
+    if (-not (test-path $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak))
+    {
+        Copy-Item -Path $env:systemroot\system32\inetsrv\config\applicationHost.config -Destination $env:systemroot\system32\inetsrv\config\applicationHost_IISAdministration.config.bak -Force
+    }
+    global:IISTest-RestoreAppHostConfig
+}
