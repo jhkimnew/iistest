@@ -115,6 +115,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
     
@@ -210,6 +211,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
         
@@ -311,6 +313,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
     
@@ -384,6 +387,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -460,6 +464,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }   
 
@@ -505,6 +510,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }  
     
@@ -576,6 +582,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
     
@@ -614,6 +621,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -804,6 +812,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -852,6 +861,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -894,6 +904,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -1083,8 +1094,8 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
-        LogEndTest
 
+        LogEndTest
     }
 
     if ( LogStartTest("IISAdministration BVT #13 Set-IISConfigAttributeValue : change a few default settings and check", 128808) -eq $true)
@@ -1176,6 +1187,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -1315,6 +1327,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -1369,6 +1382,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -1433,6 +1447,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -1486,6 +1501,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -1550,6 +1566,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -1618,6 +1635,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -1668,6 +1686,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -1726,6 +1745,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     } 
 
@@ -1801,6 +1821,7 @@ function TestScenario() {
         {       
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -1946,9 +1967,8 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
-        LogEndTest
-        
-    
+
+        LogEndTest        
     }
 
     if (LogStartTest("IISAdministration #38 - Confirm updated values when the flag value does not start from 0", 129556) -eq $true)
@@ -2059,8 +2079,8 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
-        
     }
    
     if ( LogStartTest("IISAdministration #40 - Remove-Module iisadministration should refresh the config state",129837 ) -eq $true )
@@ -2102,6 +2122,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
     
@@ -2123,6 +2144,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
     
@@ -2181,6 +2203,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
    
@@ -2338,8 +2361,8 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
-        
     }
 
     if ( LogStartTest("IISAdministration BVT #44 - Clear-IISConfigCollection", 130472) -eq $true )
@@ -2467,6 +2490,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
     
@@ -2566,6 +2590,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
     
@@ -2792,8 +2817,8 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
-        
     }
     
     if (LogStartTest("IISAdministration BVT #47 - Remove-IISConfigAttribute", 130475) -eq $true)
@@ -2996,8 +3021,8 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
-        
     }    
     
     if ( LogStartTest("Verify CLR parameter and bitness", 133425) -eq $true)
@@ -3502,8 +3527,8 @@ function TestScenario() {
             }
             LogDebug "Exit Cleanup test environment..."
         }
+
         LogEndTest
-        
     }
 
     if ( LogStartTest("Verify IISCentralCertProvider cmdlets", 133454) -eq $true)
@@ -3975,7 +4000,6 @@ function TestScenario() {
         }
 
         LogEndTest
-        
     }
 
     if ( LogStartTest("Verify CNG Encryption", 133461) -eq $true)
@@ -4223,7 +4247,6 @@ function TestScenario() {
         }
 
         LogEndTest
-        
     }
 
     if ( LogStartTest("Verify Shared Configuration", 133466) -eq $true)
@@ -5338,7 +5361,6 @@ function TestScenario() {
         }
 
         LogEndTest
-        
     }
 
     # Regression test for MSFT: 9625353: WAS fails to start with "Access Denied" when dynamicSiteRegistration is enabled
@@ -5463,6 +5485,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 
@@ -6153,6 +6176,7 @@ function TestScenario() {
         {
             LogBUGVerifyStrEq(0, "no", "no", "yes", "Skipping testcase...")
         }
+
         LogEndTest
     }
 }
