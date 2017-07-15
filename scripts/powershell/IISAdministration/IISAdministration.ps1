@@ -53,13 +53,13 @@ function Initialize($objContext)
     }
 
     import-module webadministration
-    if (get-module webadministration)
+    if (-not (get-module webadministration))
     {
         LogComment("webadministration module not found, test canceled")
         $result = $false
     }
     import-module iisadministration
-    if (get-module iisadministration)
+    if (-not (get-module iisadministration))
     {
         LogComment("iisadministration module not found, test canceled")
         $result = $false
