@@ -49,7 +49,6 @@ function global:CallExecute()
     $result = $true
     LogDebug "Enter Child::Execute()" 
     $result = Execute $objContext
-    LogTestSummary
     LogDebug "Exit Child::Execute()" 
     return $result
 }
@@ -79,6 +78,10 @@ function global:CallTerminate()
     {
         Stop-Transcript
     }
+
+    # Display summary
+    LogTestSummary   
+     
     LogDebug "Exit Global::Terminate()" 
     return $result
 }
