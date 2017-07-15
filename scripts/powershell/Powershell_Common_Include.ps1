@@ -201,14 +201,14 @@ function global:LogStartTest($param)
     
     $foundTargetTestcase = $null
     $result = $true
-    if ($global:TargetTestcases -ne $null -and $global:TargetTestcases.GetType().Name.ToLower() -ne "string")
+    if ($global:TargetIISTestcases -ne $null -and $global:TargetIISTestcases.GetType().Name.ToLower() -ne "string")
     {
-       throw ("Unsupported type for TargetTestcases, which should be comma seperated string")
+       throw ("Unsupported type for TargetIISTestcases, which should be comma seperated string")
     }
     $targets = $null
-    if ($global:TargetTestcases -ne $null)
+    if ($global:TargetIISTestcases -ne $null)
     {
-        $targets = $global:TargetTestcases.Split(",",[System.StringSplitOptions]::RemoveEmptyEntries)
+        $targets = $global:TargetIISTestcases.Split(",",[System.StringSplitOptions]::RemoveEmptyEntries)
     }
     if ($targets -ne $null -and $targets.length -gt 0)
     {
@@ -299,17 +299,17 @@ function global:LogTestSummary()
         $FailedTestCaseIDs = $FailedTestCaseIDs.TrimEnd(",")
         $FailedTestCaseIDs = $FailedTestCaseIDs.TrimStart(",")
         ("")
-        Write-Host ("NOTE: You can set $" + "global:TargetTestcases=" + $FailedTestCaseIDs + " to rerun failed test cases only") -ForegroundColor $ForegroundColor
+        Write-Host ("NOTE: You can set $" + 'global:TargetIISTestcases="' + $FailedTestCaseIDs + '" to rerun failed test cases only') -ForegroundColor $ForegroundColor
         ("")
     }
 
     Write-Host ("Total Pass: " + $g_testenv.totalPassedTestCase + ", Failure : " + $g_testenv.totalFailedTestCase) -ForegroundColor $ForegroundColor
     Write-Host ("##############################################") -ForegroundColor $ForegroundColor
 
-    if ($global:TargetTestcases -ne $null)
+    if ($global:TargetIISTestcases -ne $null)
     {
-        Write-Host ("$" + "global:TargetTestcases variable is detected with $global:TargetTestcases; cleaned up...") -ForegroundColor Yellow
-        $global:TargetTestcases = $null
+        Write-Host ("$" + "global:TargetIISTestcases variable is detected with $global:TargetIISTestcases; cleaned up...") -ForegroundColor Yellow
+        $global:TargetIISTestcases = $null
     }
 }
 
@@ -537,8 +537,14 @@ function global:LogPass($strComment)
 #////////////////////////////////////////////
 function global:LogFail($strComment)
 {
+    $info = '{0}, file {1}, line {2}' -f @( 
+            $MyInvocation.Line.Trim(), 
+            $MyInvocation.ScriptName, 
+            $MyInvocation.ScriptLineNumber 
+        ) 
+
     $g_testEnv.foundFailure = $true
-    Write-Host ("Error!!! " + $strComment) -ForegroundColor Red
+    Write-Host ("Error!!! " + $strComment + ", " + $info) -ForegroundColor Red
 }
 
 #////////////////////////////////////////////

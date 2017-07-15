@@ -3502,7 +3502,7 @@ function TestScenario() {
                 Clear-WebConfiguration -pspath "iis:\Sites\Default Web Site" -filter //appSettings 
 
                 # verify warning messages
-                if ((Get-Culture).Name -eq "en-us")
+                if ((Get-Culture).Name.ToLower() -eq "en-us")
                 {
                     $exceptionExpected = $true
                     $Error.Clear(); $ErrorMsg = ""
@@ -3655,7 +3655,7 @@ function TestScenario() {
             if ((get-command Clear-IISCentralCertProvider).Parameters.Keys.Contains("Force"))
             {
                 ("Force parameter mode")
-                if ((Get-Culture).Name -eq "en-us")
+                if ((Get-Culture).Name.ToLower() -eq "en-us")
                 {
                     # initialize $exceptionExpected
                     $exceptionExpected = $true
@@ -3773,7 +3773,7 @@ function TestScenario() {
             }
 
             LogComment("verify error messages")
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 # initialize $exceptionExpected
                 $exceptionExpected = $true
@@ -3993,7 +3993,7 @@ function TestScenario() {
             }
             
             # verify error messages
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 $config = Get-IISConfigSection -Location "Default Web Site" -SectionPath "system.webServer/security/authentication/iisClientCertificateMappingAuthentication"
                 $collection = Get-IISConfigCollection -ConfigElement $config -CollectionName "oneToOneMappings"
@@ -4501,7 +4501,7 @@ function TestScenario() {
                 } 
             }
             LogVerifyTrue((Test-Path $NewSharePath), ("Verify the share directory is created:" + $NewSharePath))
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 # initialize $exceptionExpected
                 $exceptionExpected = $true
@@ -4600,7 +4600,7 @@ function TestScenario() {
             }
             LogVerifyTrue((Test-Path $NewSharePath), ("Verify the share directory is created:" + $NewSharePath))
 
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 # initialize $exceptionExpected
                 $exceptionExpected = $true
@@ -4803,7 +4803,7 @@ function TestScenario() {
             $beforebackupKeyFile = get-item $backupKeyFilePath
             LogVerifyTrue(($beforebackupKeyFile -ne $null), "Verify key backup file is created")
 
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 # initialize $exceptionExpected
                 $exceptionExpected = $true
@@ -4838,7 +4838,7 @@ function TestScenario() {
             remove-item $backupKeyFilePath -Recurse -Confirm:$false
             $configBefore = get-childitem "$env:windir\system32\inetsrv\config" | where-Object Name -ne redirection.config
  
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 # initialize $exceptionExpected
                 $exceptionExpected = $true
@@ -5160,7 +5160,7 @@ function TestScenario() {
             LogVerifyFalse((test-path $backupKeyFilePath), "Verify keyBackup file is removed")
 
             LogComment("Verify error messages...") 
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 # initialize $exceptionExpected
                 $exceptionExpected = $true
@@ -5960,7 +5960,7 @@ function TestScenario() {
             Remove-IISSiteBinding "Default Web Site" "*:443:" http -confirm:$false
             Remove-IISSite $siteName -confirm:$false
 
-            if ((Get-Culture).Name -eq "en-us")
+            if ((Get-Culture).Name.ToLower() -eq "en-us")
             {
                 # initialize $exceptionExpected
                 $expectedException = $true
