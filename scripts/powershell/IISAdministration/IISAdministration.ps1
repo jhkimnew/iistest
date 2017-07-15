@@ -73,7 +73,6 @@ function Terminate($objContext) {
 }
 
 function TestScenario() {
-    <#
     if ( LogStartTest("IISAdministration BVT #1 New-IISSite", 128796) -eq $true )
     {
         if ( IISTest-Ready )
@@ -862,7 +861,7 @@ function TestScenario() {
             
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
 		else
@@ -905,7 +904,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
 		else
@@ -1095,7 +1094,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -1188,7 +1187,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -1328,7 +1327,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -1822,7 +1821,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -1968,7 +1967,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -2080,7 +2079,7 @@ function TestScenario() {
             
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -2355,14 +2354,14 @@ function TestScenario() {
             Copy-Item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema_Backup.xml" -Destination "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema.xml" -Force
             remove-item -Path "$g_testDir\scripts\powershell\IISAdministration\IISPSTest_CustomSchema_Backup.xml" -Force
             # we added some lines in root web.config that may casue test issues in other scenarios, so need to restore the file
-            RestoreRootWebConfig
+            IISTest-RestoreRootWebConfig
             cd iis:\
             IISTEST-SafeDelete ("$env:SystemRoot\system32\inetsrv\config\schema\IISPSTest_CustomSchema.xml")
           
             
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -2818,7 +2817,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -3022,7 +3021,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -3544,7 +3543,7 @@ function TestScenario() {
         if ( IISTest-Ready )
         {
             # test scenarios                        
-            $username = ("$env:computername\" + $global:g_testEnv.IISTestAdminUser)
+            $username = ($global:g_testEnv.IISTestAdminUser)
             $unsecuredPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($global:g_testEnv.IISTestAdminPassword))
             $securedPassword = $global:g_testEnv.IISTestAdminPassword
             $keyPassword = convertto-securestring "xxx" -asplaintext -force
@@ -5491,7 +5490,7 @@ function TestScenario() {
 
             trap
             {
-                LogTestCaseError $_ $expectedException
+                LogTestCaseError $_
             }
         }
         else
@@ -5501,7 +5500,7 @@ function TestScenario() {
 
         LogEndTest
     }
-    #>
+    
     if ( LogStartTest("Verify IISSiteBinding cmdlets", 133745) -eq $true)
     {
         $SiteBindingCmdletAvailable = (get-command -Name "New-IISSiteBinding") -ne $null
@@ -6194,14 +6193,15 @@ function TestScenario() {
     }
 }
 
+# backup and clean IIS configuration files before starting
 IISTest-BackupAppHostConfig
 IISTest-BackupRootWebConfig
 
 #
-# Call global function of RunTest to launch all test scenarios
+# Call global function of RunTest to invoke TestScenario function
 #
 RunTest
 
-# We have changed some settings in root web.config, so need to restore in case they will make other test fail, such as ddsuiteUI tests.
+# clean up IIS configuration files after finishing
 IISTest-RestoreAppHostConfig
 IISTest-RestoreRootWebConfig

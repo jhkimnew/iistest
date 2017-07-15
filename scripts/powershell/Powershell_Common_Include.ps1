@@ -49,6 +49,7 @@ function global:CallExecute()
     $result = $true
     LogDebug "Enter Child::Execute()" 
     $result = Execute $objContext
+    LogTestSummary
     LogDebug "Exit Child::Execute()" 
     return $result
 }
@@ -110,7 +111,8 @@ function global:RunTest()
     # Exception Error Handler
     #
     trap {
-        LogError ("RunTest(): Error in " + $_)
+        LogError ("RunTest(): Error!!! in " + $_)
+        $Error
         set-variable -name continueRun -value $false -scope 1
         continue
     }
@@ -192,32 +194,44 @@ function global:LogStartTest($param)
     $g_testenv.testStarted = $true
     $strComment = $param[0]
     $testcaseID = $param[1]
-    $g_testenv.testcase = $testcaseID.ToString() + ":" + $strComment
-
-    $foundTargetTestcase = $false    
-    if ($g_testenv.targetTestcases -ne $null -and $g_testenv.targetTestcases.length -ne $null)
+    $g_testenv.testcase = $testcaseID.ToString() + ": " + $strComment
+    
+    $foundTargetTestcase = $null
+    $result = $true
+    if ($global:TargetTestcases -ne $null -and $global:TargetTestcases.GetType().Name.ToLower() -ne "string")
     {
-        foreach ($item in $g_testenv.targetTestcases)
+       throw ("Unsupported type for TargetTestcases, which should be comma seperated string")
+    }
+    $targets = $null
+    if ($global:TargetTestcases -ne $null)
+    {
+        $targets = $global:TargetTestcases.Split(",",[System.StringSplitOptions]::RemoveEmptyEntries)
+    }
+    if ($targets -ne $null -and $targets.length -gt 0)
+    {
+        foreach ($item in $targets)
         {
-            if ($testcaseID.ToString() -eq $item)
+            if ($testcaseID.ToString() -eq $item.ToString())
             {
-                $foundTargetTestcase = $true
+                $foundTargetTestcase = $item
             }
         }
-        if ($foundTargetTestcase)
+        if ($foundTargetTestcase -ne $null)
         {
-            return $true
+            $result = $true
         }
         else
         {
             $g_testenv.testStarted = $false
-            return $false
+            $result = $false
         }
     }
     else
     {
-        return $true
+        $result = $true
     }
+
+    return $result
 }
 
 #////////////////////////////////////////////
@@ -234,18 +248,66 @@ function global:LogEndTest()
         throw ("Failed to end test")
     }
     $g_testenv.testStarted = $false
-    Write-Host ("###################################")
-    if (-not $g_testenv.foundFailure)
+
+    $ForegroundColor = "Green"
+    if ($g_testenv.foundFailure)
     {
-        Write-Host ("Test Success " + $g_testenv.testcase)  -ForegroundColor Green
+        $ForegroundColor = "Red"
+    }
+
+    Write-Host ("##############################################") -ForegroundColor $ForegroundColor
+    if ($g_testenv.foundFailure)
+    {
+        $message = ("Test Failure " + $g_testenv.testcase)
         $g_testenv.totalFailedTestCase += 1
+        $g_testenv.FailedTestCases += "::comma::" + $g_testenv.testcase
     }
     else
     {
-        Write-Host ("Test Failure " + $g_testenv.testcase) -ForegroundColor Red
-        $g_testenv.totalPassedTestCase += 1 
+        $message = ("Test Success " + $g_testenv.testcase)
+        $g_testenv.totalPassedTestCase += 1
     }
-    Write-Host ("###################################")
+    Write-Host $message -ForegroundColor $ForegroundColor
+    Write-Host ("##############################################") -ForegroundColor $ForegroundColor
+}
+
+function global:LogTestSummary()
+{
+    if ($g_testenv.testStarted)
+    {
+        throw ("Failed to end test")
+    }
+    
+    $ForegroundColor = "Green"
+    if ($g_testenv.totalFailedTestCase -gt 0)
+    {
+        $ForegroundColor = "Red"
+    }
+
+    Write-Host ("##############################################") -ForegroundColor $ForegroundColor
+    if ($g_testenv.FailedTestCases -ne $null)
+    {
+        $FailedTestCaseIDs = ""
+        Write-Host ("List of failed tests:") -ForegroundColor $ForegroundColor
+        $g_testenv.FailedTestCases.Replace("::comma::", "``").Split("``")  | foreach {
+            Write-Host $psitem -ForegroundColor $ForegroundColor
+            $FailedTestCaseIDs += ($psitem.Split(":") | Select-Object -First 1) + ","
+        }
+        $FailedTestCaseIDs = $FailedTestCaseIDs.TrimEnd(",")
+        $FailedTestCaseIDs = $FailedTestCaseIDs.TrimStart(",")
+        ("")
+        Write-Host ("NOTE: You can set $" + "global:TargetTestcases=" + $FailedTestCaseIDs + " to rerun failed test cases only") -ForegroundColor $ForegroundColor
+        ("")
+    }
+
+    Write-Host ("Total Pass: " + $g_testenv.totalPassedTestCase + ", Total Failure : " + $g_testenv.totalFailedTestCase) -ForegroundColor $ForegroundColor
+    Write-Host ("##############################################") -ForegroundColor $ForegroundColor
+
+    if ($global:TargetTestcases -ne $null)
+    {
+        Write-Host ("$" + "global:TargetTestcases variable is detected with $global:TargetTestcases; cleaned up...") -ForegroundColor Yellow
+        $global:TargetTestcases = $null
+    }
 }
 
 #////////////////////////////////////////////
@@ -680,7 +742,7 @@ add-member -in $global:g_testEnv noteproperty testcase  $null
 add-member -in $global:g_testEnv noteproperty foundFailure $false
 add-member -in $global:g_testEnv noteproperty totalPassedTestCase 0
 add-member -in $global:g_testEnv noteproperty totalFailedTestCase 0
-add-member -in $global:g_testEnv noteproperty targetTestcases $null
+add-member -in $global:g_testEnv noteproperty FailedTestCases $null
 global:Reset-IISTestCredential -force:$false
  
 #////////////////////////////////////////////
