@@ -3427,7 +3427,9 @@ function TestScenario() {
                 LogVerifyNumEq(($collectionCounter + 1), $old_collectionCounter, "Verify collection element removed for .Net 4.0")
                 LogVerifyStrNotEq("a4_0", $actual.Attributes["assembly"].Value, "Verify collection element removed for .Net 4.0")
 
-                $wow64Exists = test-path 'Env:\ProgramFiles(x86)'        
+                $wow64Exists = test-path 'Env:\ProgramFiles(x86)'
+                & ("$env:windir\syswow64\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "import-module iisadministration; Get-IISConfigSection -SectionPath "appSettings" -Clr 4.0 | Set-IISConfigAttributeValue -AttributeName 'file' -AttributeValue 'Net4 32bit' "
+
                 if ( $wow64Exists )
                 {
                     # backup old executionpolicy for 32bit mode
