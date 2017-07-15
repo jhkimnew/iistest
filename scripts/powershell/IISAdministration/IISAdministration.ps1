@@ -45,12 +45,31 @@ $TEXT_SCRIPT_SUMMARY     = "N/A";
 
 function Initialize($objContext)
 {
+    $result = $true
     # Execute Initalize function for this test area
     if( ($testarea.Initialize($objContext) ) -ne $true ) 
     {
-        return $false;
+        $result = $false
     }
-    return $true
+
+    import-module webadministration
+    if (get-module webadministration)
+    {
+        LogComment("webadministration module not found, test canceled")
+        $result = $false
+    }
+    import-module iisadministration
+    if (get-module iisadministration)
+    {
+        LogComment("iisadministration module not found, test canceled")
+        $result = $false
+    }    
+    if ((get-module iisadministration).Version -eq "1.0.0.0")
+    {
+        LogComment("iisadministration module is not updated, test canceled")
+        $result = $false
+    }
+    return $result
 } 
 
 function Execute($objContext)
@@ -993,7 +1012,6 @@ function TestScenario() {
                 LogVerifyTrue($equal, "The error message is expected.")
             }
             
-
             $configSection = Get-IISConfigSection -sectionPath "system.applicationHost/sites"
             $sitesCollection = Get-IISConfigCollection -ConfigElement $configSection            
             $site = Get-IISConfigCollectionElement -ConfigCollection $sitesCollection -ConfigAttribute @{Name = "Default Web Site"}
@@ -3400,6 +3418,10 @@ function TestScenario() {
                 $wow64Exists = test-path 'Env:\ProgramFiles(x86)'        
                 if ( $wow64Exists )
                 {
+                    # backup old executionpolicy for 32bit mode
+                    $oldExecutionPolicy = & ("$env:windir\syswow64\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "Get-ExecutionPolicy"                    
+                    & ("$env:windir\syswow64\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "Set-ExecutionPolicy Unrestricted -Force"
+                    
                     # configure test data on 64bit/32bit root web.config files
                     & ("$env:windir\system32\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "import-module iisadministration; Get-IISConfigSection -SectionPath "appSettings" -Clr 4.0 | Set-IISConfigAttributeValue -AttributeName 'file' -AttributeValue 'Net4 64bit' "
                     & ("$env:windir\syswow64\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "import-module iisadministration; Get-IISConfigSection -SectionPath "appSettings" -Clr 4.0 | Set-IISConfigAttributeValue -AttributeName 'file' -AttributeValue 'Net4 32bit' "
@@ -3449,7 +3471,10 @@ function TestScenario() {
                     & ("$env:windir\system32\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "import-module iisadministration; Get-IISConfigSection -SectionPath "appSettings" -Clr 4.0 | Remove-IISConfigAttribute -AttributeName 'file' "
                     & ("$env:windir\syswow64\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "import-module iisadministration; Get-IISConfigSection -SectionPath "appSettings" -Clr 4.0 | Remove-IISConfigAttribute -AttributeName 'file' "
                     & ("$env:windir\system32\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "import-module iisadministration; Get-IISConfigSection -SectionPath "appSettings" -Clr 2.0 | Remove-IISConfigAttribute -AttributeName 'file' "
-
+                    
+                    # rollback old executionpolicy for 32bit mode
+                    $oldExecutionPolicy = & ("$env:windir\syswow64\WindowsPowerShell\v1.0\PowerShell.exe" ) -command "Get-ExecutionPolicy"                    
+                    & ("$env:windir\syswow64\WindowsPowerShell\v1.0\PowerShell.exe" ) -command ("Set-ExecutionPolicy " + $oldExecutionPolicy + " -Force")
                     trap
                     {
                         LogTestCaseError $_ $exceptionExpected
