@@ -14,20 +14,32 @@
 $global:transScriptFile = "SKIP"
 
 # Initialze $global:g_testDir
+$testscriptName = "IISAdministration.ps1"
+$testscriptPath = $null
 if ($global:g_testDir -eq $null)
 {
-    $currentPath = $MyInvocation.MyCommand.Definition
-    if (Test-Path $currentPath)
+    # get the test script path
+    $testscriptPath = $MyInvocation.MyCommand.Definition
+    if (-not (test-path $testscriptPath))
+    {
+        # if this is executed from powershell command window, the testscriptPath should be set manually or the current directory location should be where the test script file exists.
+        if (test-path ".\$testscriptName")
+        {
+            $testscriptPath = Join-Path (get-item .).FullName $testScriptName
+        }
+        else
+        {
+            Write-host ("Error!!!! You need to set variable $" + "global:g_testDir manually if you want to debug withour running test script.") -ForegroundColor Red
+            return
+        }
+    }
+    if (Test-Path $testscriptPath)
     {
         $tempPath = Split-Path -Parent -Path $currentPath
         $tempPath = Split-Path -Parent -Path $tempPath
         $tempPath = Split-Path -Parent -Path $tempPath
         $tempPath = Split-Path -Parent -Path $tempPath
         $global:g_testDir = $tempPath
-    }
-    else
-    {
-        ("Failed to initialize g_testDir, try to set the global variable manually as a workaround")
     }
 }
 

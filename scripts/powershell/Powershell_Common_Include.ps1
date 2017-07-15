@@ -303,7 +303,7 @@ function global:LogTestSummary()
         ("")
     }
 
-    Write-Host ("Total Pass: " + $g_testenv.totalPassedTestCase + ", Total Failure : " + $g_testenv.totalFailedTestCase) -ForegroundColor $ForegroundColor
+    Write-Host ("Total Pass: " + $g_testenv.totalPassedTestCase + ", Failure : " + $g_testenv.totalFailedTestCase) -ForegroundColor $ForegroundColor
     Write-Host ("##############################################") -ForegroundColor $ForegroundColor
 
     if ($global:TargetTestcases -ne $null)
