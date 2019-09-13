@@ -1,4 +1,8 @@
-﻿using System;
+﻿/*
+For Ubutu OS, update SENDGRID_API_KEY of Properties\launchSettings.json with the valid value
+and then run "sudo dotnet run --launch-profile test".
+ */
+using System;
 using System.Threading.Tasks;
 using SendGrid;
 using SendGrid.Helpers.Mail;
