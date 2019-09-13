@@ -16,6 +16,7 @@ namespace jhkimnewsendgridconsole
         static async Task Execute() {
             var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             Console.WriteLine("Key [" + apiKey + "]");
+            Console.WriteLine("JHKIM_ENV [" + Environment.GetEnvironmentVariable("JHKIM_ENV") + "]");
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("jhkim@microsoft.com", "Jeong Hwan Kim");
             var to = new EmailAddress("jhkim@microsoft.com", "Jeong Hwan Kim");
