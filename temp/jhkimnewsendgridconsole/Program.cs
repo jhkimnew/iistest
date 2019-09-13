@@ -1,6 +1,9 @@
 ﻿/*
-For Ubutu OS, update SENDGRID_API_KEY of Properties\launchSettings.json with the valid value
-and then run "sudo dotnet run --launch-profile test".
+For Ubutu OS, 
+1) Install dotnet core (https://dotnet.microsoft.com/download/linux-package-manager/ubuntu16-04/sdk-current)
+2) Clone this repo
+3) update SENDGRID_API_KEY of Properties\launchSettings.json with the valid value
+4) run "sudo dotnet run --launch-profile test".
  */
 using System;
 using System.Threading.Tasks;
