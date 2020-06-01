@@ -5,7 +5,8 @@ EXPOSE 80
 ENTRYPOINT ["dotnet", "BlobTransfer.dll"]
 #
 # How to run this program
-#     docker run -v ./secret:/secret --env BlobTrasferSourceSasUriSecretFilePath=/secret/blobtransfersecretfile.json BlobTrasferTargetSasUriSecretFilePath=/secret/blobtransfersecretfile.json --rm jhkimnew/transferblob
+#     docker build -t jhkimnew/transferblob .
+#     docker run -v ~/gitroot/iistest/temp/BlobTransfer/src/secret:/secret --env BlobTrasferSourceSasUriSecretFilePath=/secret/blobtransfersecretfile.json --env BlobTrasferTargetSasUriSecretFilePath=/secret/blobtransfersecretfile.json --rm jhkimnew/transferblob
 # 
 # How to generate sas token for the sas ui for source and target
 #     az storage container generate-sas --name export --account-name mcrdevtransfer --expiry 2021-01-01 --permissions acdlrw --https-only --output tsv --subscription "MCR - TEST"
