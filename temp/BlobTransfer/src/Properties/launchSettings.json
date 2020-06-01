@@ -3,8 +3,8 @@
     "BlobTransfer": {
       "commandName": "Project",
       "environmentVariables": {
-        "BlobTrasferTargetSasUriSecretFilePath": "blobtransfersecretfile.json",
-        "BlobTrasferSourceSasUriSecretFilePath": "blobtransfersecretfile.json"
+        "BlobTrasferTargetSasUriSecretFilePath": ".\\secret\\blobtransfersecretfile.json",
+        "BlobTrasferSourceSasUriSecretFilePath": ".\\secret\\blobtransfersecretfile.json"
       }
     }
   }
