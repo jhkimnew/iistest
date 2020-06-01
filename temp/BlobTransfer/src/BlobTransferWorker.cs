@@ -145,22 +145,22 @@ namespace BlobTransfer
 
                 if (!succeededToGetContentMD5)
                 {
-                    _logger.LogInformation($"Blob {blobUri}: Failed to get MD5");
+                    _logger.LogError($"Failed to copy: {blobUri}");
                     transferReport.CopyBlobs.Failed.Add(blobName);
                     return;
                 }
 
                 if (String.IsNullOrEmpty(contentMD5))
                 {
-                    _logger.LogInformation($"Blob {blobUri}: Skipped");
+                    _logger.LogInformation($"Skip to copy: {blobUri}");
                     transferReport.CopyBlobs.Skipped.Add(blobName);
                     return;
                 }
 
-                _logger.LogInformation($"Blob {blobUri}:{contentMD5} Start to Copy");
+                _logger.LogInformation($"Begin to copy: {blobUri}:{contentMD5}");
                 await _blobCopier.SetMetadata(blobName, "mcrexport", contentMD5);
                 await _blobCopier.CopyAsync(blobName);
-                _logger.LogInformation($"Blob {blobUri}:{contentMD5} Completed to copy");
+                _logger.LogInformation($"End to copy: {blobUri}:{contentMD5}");
 
                 transferReport.CopyBlobs.Succeeded.Add(blobName);
             }
