@@ -157,10 +157,10 @@ namespace BlobTransfer
                     return;
                 }
 
-                _logger.LogInformation($"Blob {blobUri}: Start to Copy");
+                _logger.LogInformation($"Blob {blobUri}:{contentMD5} Start to Copy");
                 await _blobCopier.SetMetadata(blobName, "mcrexport", contentMD5);
                 await _blobCopier.CopyAsync(blobName);
-                _logger.LogInformation($"Blob {blobUri}: Completed to copy");
+                _logger.LogInformation($"Blob {blobUri}:{contentMD5} Completed to copy");
 
                 transferReport.CopyBlobs.Succeeded.Add(blobName);
             }

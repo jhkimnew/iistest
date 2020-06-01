@@ -130,7 +130,7 @@ namespace BlobTransfer
 
             context.ProgressHandler = new Progress<TransferStatus>((progress) =>
             {
-                _logger.LogInformation($"{blobName}: bytes transferred {progress.BytesTransferred}.");
+                _logger.LogDebug($"{blobName}: bytes transferred {progress.BytesTransferred}.");
             });
 
             return context;
