@@ -24,6 +24,12 @@ namespace BlobTransfer
             _targetContainer = new CloudBlobContainer(targetContainerSas);
         }
 
+        public CloudBlobContainer GetSourceContainer()
+        {
+            var result = _sourceContainer.ServiceClient.GetContainerReference("export");
+            return result;
+        }
+
         public async Task CopyAsync(string blobName, string contentMD5, CancellationToken token = default(CancellationToken))
         {
             var sourceBlob = _sourceContainer.GetBlobReference(blobName);
