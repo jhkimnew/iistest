@@ -1,0 +1,20 @@
+{
+  "ListSourceBlob": {
+    "Succeeded": [
+      "mcrflowdev/hello-world-export:latest-sha256:34d7629ce2e4f9b812564eebdf55d8c6bb2e9078fcc2d7ececb1c6cf92283541",
+      "staging/mcrflowdev/hello-world-export:latest-sha256:34d7629ce2e4f9b812564eebdf55d8c6bb2e9078fcc2d7ececb1c6cf92283541",
+      "test.txt"
+    ],
+    "Skipped": [],
+    "Failed": []
+  },
+  "CopyBlobs": {
+    "Succeeded": [],
+    "Skipped": [
+      "mcrflowdev/hello-world-export:latest-sha256:34d7629ce2e4f9b812564eebdf55d8c6bb2e9078fcc2d7ececb1c6cf92283541",
+      "staging/mcrflowdev/hello-world-export:latest-sha256:34d7629ce2e4f9b812564eebdf55d8c6bb2e9078fcc2d7ececb1c6cf92283541",
+      "test.txt"
+    ],
+    "Failed": []
+  }
+}

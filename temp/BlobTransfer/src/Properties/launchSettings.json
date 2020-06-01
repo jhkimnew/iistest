@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "BlobTransfer": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "BlobTrasferTargetSasUriSecretFilePath": "blobtransfersecretfile.json",
+        "BlobTrasferSourceSasUriSecretFilePath": "blobtransfersecretfile.json"
+      }
+    }
+  }
+}
