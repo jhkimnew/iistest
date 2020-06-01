@@ -11,6 +11,8 @@ namespace BlobTransfer
     {
         private const string TransferReportNamePrefix = "report";
         private const int ERROR_BAD_ARGUMENTS = 0xA0;
+        private const int ERROR_SUCCESS = 0;
+        private const int ERROR_FAIL = 1;
 
         public static async Task Main(string[] args)
         {
@@ -36,22 +38,21 @@ namespace BlobTransfer
             var report = new TransferReport();
             var worker = new BlobTransferWorker(configuration, loggerFactory);
 
-            await worker.RunAsync(report);
+            try
+            {
+                await worker.RunAsync(report);
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Unexpected exception: {e.ToString()}.");
+                Environment.ExitCode = ERROR_FAIL;
+                return;
+            }
+
             await WriteFileAsync(TransferReportNamePrefix, report);
-
+            Environment.ExitCode = ERROR_SUCCESS;
+            
             logger.LogInformation("Done!");
-        }
-
-        private static IConfiguration GetConfig()
-        {
-            var configBuilder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddEnvironmentVariables();
-
-            var config = configBuilder.Build();
-
-            return config;
         }
 
         private static bool InitializeBlobTransfer(ILogger logger)
@@ -86,6 +87,18 @@ namespace BlobTransfer
             }
 
             return result;
+        }
+
+        private static IConfiguration GetConfig()
+        {
+            var configBuilder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
+
+            var config = configBuilder.Build();
+
+            return config;
         }
 
         private async static Task WriteFileAsync(string fileNamePrefix, object data)
