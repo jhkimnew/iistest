@@ -30,30 +30,42 @@ namespace BlobTransfer
             return result;
         }
 
-        public async Task CopyAsync(string blobName, string contentMD5, CancellationToken token = default(CancellationToken))
+        public async Task CopyAsync(string blobName, CancellationToken token = default(CancellationToken))
         {
             var sourceBlob = _sourceContainer.GetBlobReference(blobName);
             var targetBlob = _targetContainer.GetBlobReference(blobName);
             TransferCheckpoint checkpoint = null;
             SingleTransferContext context = GetSingleTransferContext(checkpoint, blobName);
 
-            await TransferManager.CopyAsync(
-                sourceBlob: sourceBlob,
-                destBlob: targetBlob,
-                copyMethod: CopyMethod.ServiceSideAsyncCopy,
-                options: null,
-                context: context,
-                cancellationToken: token);
-
             try
             {
-                // Add mcrexport metadata to the source blob.
-                sourceBlob.Metadata["mcrexport"] = contentMD5;
+                await TransferManager.CopyAsync(
+                    sourceBlob: sourceBlob,
+                    destBlob: targetBlob,
+                    copyMethod: CopyMethod.ServiceSideAsyncCopy,
+                    options: null,
+                    context: context,
+                    cancellationToken: token);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                _logger.LogInformation($"Failed to copy blob. You don't have permission to copy");
+                throw;
+            }
+        }
+
+        public async Task SetMetadata(string blobName, string metadataName, string metadataValue)
+        {
+            var sourceBlob = _sourceContainer.GetBlobReference(blobName);
+            try
+            {
+                // Add mcrexport metadata with the contentMD5 value to indicate this blob is already copied.
+                sourceBlob.Metadata[metadataName] = metadataValue;
                 await sourceBlob.SetMetadataAsync();
             }
             catch (StorageException e)
             {
-                _logger.LogInformation($"Failed to copy blob. HTTP error code {e.RequestInformation.HttpStatusCode}: {e.RequestInformation.ErrorCode}");
+                _logger.LogInformation($"Failed to set metadata. {blobName}:{metadataName}:{metadataValue}, HTTP error code {e.RequestInformation.HttpStatusCode}: {e.RequestInformation.ErrorCode}");
                 throw;
             }
         }

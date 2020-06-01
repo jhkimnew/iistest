@@ -18,8 +18,6 @@ namespace BlobTransfer
         {
 
             //ToDo: Clean project file to remove unused references
-            //ToDo: Create Cancelation token with timeout 20 minutes to force this program exit in 20 minutes
-
             var loggerFactory = LoggerFactory.Create(builder =>
                 {
                     builder.AddConsole();

@@ -158,7 +158,8 @@ namespace BlobTransfer
                 }
 
                 _logger.LogInformation($"Blob {blobUri}: Start to Copy");
-                await _blobCopier.CopyAsync(blobName, contentMD5);
+                await _blobCopier.SetMetadata(blobName, "mcrexport", contentMD5);
+                await _blobCopier.CopyAsync(blobName);
                 _logger.LogInformation($"Blob {blobUri}: Completed to copy");
 
                 transferReport.CopyBlobs.Succeeded.Add(blobName);
