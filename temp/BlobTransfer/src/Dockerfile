@@ -17,10 +17,7 @@ ENTRYPOINT ["dotnet", "BlobTransfer.dll"]
 #         and then replace *** with actual token value and save the file
 #
 # 3. Run this program with executing the below commands.
-#     mkdir ~/gitroot
-#     cd ~/gitroot
-#     git clone https://github.com/jhkimnew/iistest.git
-#     cd ~/gitroot/iistest/temp/BlobTransfer/src
+#     cd ~/gitroot/mcr/Tools/BlobTransfer/src
 #     dotnet publish
 #     docker build -t jhkimnew/transferblob .
 #     docker run -v ~/gitroot/iistest/temp/BlobTransfer/src/secret:/secret --env BlobTrasferSourceSasUriSecretFilePath=/secret/blobtransfersecretfile.json --env BlobTrasferTargetSasUriSecretFilePath=/secret/blobtransfersecretfile.json --rm jhkimnew/transferblob
