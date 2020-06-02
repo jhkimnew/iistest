@@ -151,7 +151,7 @@ namespace BlobTransfer
 
                 if (String.IsNullOrEmpty(contentMD5))
                 {
-                    _logger.LogInformation($"Skip to copy: {blobUri}");
+                    _logger.LogDebug($"Skip to copy: {blobUri}");
                     transferReport.CopyBlobs.Skipped.Add(blobName);
                     return;
                 }
