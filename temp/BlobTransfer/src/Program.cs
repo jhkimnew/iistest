@@ -16,8 +16,6 @@ namespace BlobTransfer
 
         public static async Task Main(string[] args)
         {
-
-            //ToDo: Clean project file to remove unused references
             var loggerFactory = LoggerFactory.Create(builder =>
                 {
                     builder.AddConsole();
