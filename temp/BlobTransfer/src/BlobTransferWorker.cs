@@ -133,6 +133,7 @@ namespace BlobTransfer
         {
             string blobName = blob.Name;
             string blobUri = blob.Uri.AbsoluteUri;
+            const string metadataName = "mcrexport";
 
             transferReport.ListSourceBlob.Succeeded.Add(blobName);
             try
@@ -157,7 +158,7 @@ namespace BlobTransfer
                 }
 
                 _logger.LogInformation($"Begin to copy: {blobUri}:{contentMD5}");
-                await _blobCopier.SetMetadata(blobName, "mcrexport", contentMD5);
+                await _blobCopier.SetMetadata(blobName, metadataName, contentMD5);
                 await _blobCopier.CopyAsync(blobName);
                 _logger.LogInformation($"End to copy: {blobUri}:{contentMD5}");
 
@@ -165,8 +166,10 @@ namespace BlobTransfer
             }
             catch (Exception e)
             {
+                _logger.LogError($"Blob {blobName}: failed to copy, exception: {e.ToString()}.");
+
                 transferReport.CopyBlobs.Failed.Add(blobName);
-                _logger.LogError($"Blob {blobName}: failed to copy, unexpected exception: {e.ToString()}.");
+                await _blobCopier.SetMetadata(blobName, metadataName, "failed");
             }
         }
 
